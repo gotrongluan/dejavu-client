@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { PureComponent } from 'react';
+import { Provider } from 'react-redux';
+//import { configureStore } from 'redux-config/store';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import { Layout } from 'antd';
+import NiceScrolledLayout from 'layouts/NiceScrolledLayout';
+import Header from 'layouts/Header';
+import Footer from 'layouts/Footer';
+import Routers from 'config/router.config';
+import { routeRender } from 'utils/router';
+import styles from './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const { Content } = Layout;
+//const store = configureStore();
+
+class App extends PureComponent {
+	render() {
+		return (
+			<div>
+				<BrowserRouter>
+				<Layout className={styles.app}>
+							<Header />
+							<NiceScrolledLayout>
+								<Content style={{ backgroundColor: 'white' }}>
+									<Switch>{ Routers.map(route => routeRender(route)) }</Switch>
+								</Content>
+								<Footer />
+							</NiceScrolledLayout>
+						</Layout>
+				</BrowserRouter>
+			</div>
+		);
+	}
 }
 
 export default App;

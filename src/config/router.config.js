@@ -3,49 +3,49 @@ export default [
         key: 'home',
         path: '/home',
         text: 'Home Page',
-        component: 'pages/Home',
+        component: 'Home',
     },
     {
         key: 'livestream',
         path: '/livestream',
         text: 'Live Stream',
-        component: 'pages/LiveStream/Stream',
+        component: 'LiveStream/Stream',
     },
     {
         key: 'messenger',
         path: '/messenger:converId',
         hideInMenu: true,
-        component: 'pages/Messenger',
+        component: 'Messenger',
     },
     {
         key: 'notifications',
         path: '/notifications',
         hideInMenu: true,
-        component: 'pages/Notification',
+        component: 'Notification',
     },
     {
         key: 'account',
         path: '/account',
         hideInMenu: true,
-        component: 'pages/Account/Account',
+        component: 'Account/Account',
     },
     {
         key: 'streamer-account',
         path: '/streamer/:streamerId',
         hideInMenu: true,
-        component: 'pages/Account/StreamerAccount',
+        component: 'Account/StreamerAccount',
     },
     {
         key: 'view',
         path: '/view:streamerId',
         hideInMenu: true,
-        component: 'pages/LiveStream/View'
+        component: 'LiveStream/View'
     },
     {
         key: 'exception',
         path: '/exception:type',
         hideInMenu: true,
-        component: 'pages/Exception',
+        component: 'Exception',
     },
     {
         key: 'default',

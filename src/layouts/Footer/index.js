@@ -1,8 +1,12 @@
 import React from 'react';
 import styles from './index.module.less';
 
-export default () => {
+const Footer = (props) => {
     return (
-        <div className={styles.header}>This is header</div>
+        <div className={styles.footer}>
+            <div><span>2019</span> © Copyright. All right reserved.</div>
+        </div>
     )
 }
+
+export default Footer;

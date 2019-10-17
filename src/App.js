@@ -8,7 +8,7 @@ import Header from 'layouts/Header';
 import Footer from 'layouts/Footer';
 import Routers from 'config/router.config';
 import { routeRender } from 'utils/router';
-import styles from './App.css';
+import styles from './App.module.less';
 
 const { Content } = Layout;
 //const store = configureStore();
@@ -18,15 +18,15 @@ class App extends PureComponent {
 		return (
 			<div>
 				<BrowserRouter>
-				<Layout className={styles.app}>
-							<Header />
-							<NiceScrolledLayout>
-								<Content style={{ backgroundColor: 'white' }}>
-									<Switch>{ Routers.map(route => routeRender(route)) }</Switch>
-								</Content>
-								<Footer />
-							</NiceScrolledLayout>
-						</Layout>
+					<Layout className={styles.app}>
+						<Header />
+						<NiceScrolledLayout>
+							<Content style={{ backgroundColor: 'white' }}>
+								<Switch>{ Routers.map(route => routeRender(route)) }</Switch>
+							</Content>
+							<Footer />
+						</NiceScrolledLayout>
+					</Layout>
 				</BrowserRouter>
 			</div>
 		);

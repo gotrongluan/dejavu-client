@@ -16,18 +16,21 @@ export default [
         path: '/messenger:converId',
         hideInMenu: true,
         component: 'Messenger',
+        icon: '',
     },
     {
         key: 'notifications',
         path: '/notifications',
         hideInMenu: true,
         component: 'Notification',
+        icon: '',
     },
     {
         key: 'account',
         path: '/account',
         hideInMenu: true,
         component: 'Account/Account',
+        icon: 'user',
     },
     {
         key: 'streamer-account',

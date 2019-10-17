@@ -1,0 +1,31 @@
+.popover {
+    width: 336px;
+    z-index: 100;
+    :global(.ant-popover-inner-content) {
+        padding: 0;
+    }
+}
+
+.empty {
+    text-align: center;
+    height: 500px;
+    .inlineDiv {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+  
+.viewAll {
+    padding: 6px 0;
+    text-align: center;
+    color: @primary-color;
+    border-radius: 0 0 @border-radius-base @border-radius-base;
+    border-top: 1px solid @border-color-base;
+    transition: all 0.3s;
+    cursor: pointer;
+    &:hover {
+        color: @heading-color;
+    }
+}

@@ -10,13 +10,15 @@ const { Header } = Layout;
 const MenuItem = Menu.Item;
 
 const DejavuHeader = (props) => {
+    const { location } = props;
+    let selectedKey = location.pathname.slice(1);
     return (
         <Header className={styles.header}>
             <div className={styles.logo}>Dejavu</div>
             <Menu
                 className={styles.menu}
                 mode="horizontal"
-                selectable="home"
+                selectedKeys={[selectedKey]}
                 style={{ lineHeight: '64px' }}
             >
                 {
@@ -24,7 +26,7 @@ const DejavuHeader = (props) => {
                         !route.hideInMenu && !route.redirect && route.text
                     ).map(route => 
                         <MenuItem key={route.key}>
-                            {route.text}
+                            <Link to={route.path} style={{ color: 'inherit' }}>{route.text}</Link>
                         </MenuItem>
                     )
                 }

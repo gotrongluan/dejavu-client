@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Primary';
-import MessengerPopoverIcon from 'elements/Icon/Messenger';
+import MESSAGES from 'assets/faker/messenger';
+import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
 
 class MessengerPopover extends React.PureComponent {
@@ -19,10 +20,13 @@ class MessengerPopover extends React.PureComponent {
     getContent = () => {
         const {
             //messages,
-            loading,
+            //loading,
             oldLoading
         } = this.props;
-        const messages = {};
+        const loading = false;
+        let messages = MESSAGES;
+        //sort messages
+        messages = _.orderBy(messages, ['updatedAt'], ['desc']);
         const content = _.isEmpty(messages) ? (
             <div className={styles.empty}>
                 <div className={styles.inlineDiv}>
@@ -30,13 +34,18 @@ class MessengerPopover extends React.PureComponent {
                 </div>
             </div>
         ) : (
-            <Scrollbars style={{ height: 500 }} onScroll={this.handleScroll}>
+            <Scrollbars autoHeight autoHeightMax={500} onScroll={this.handleScroll}>
                 <List
-                    className={styles.itemList}
+                    className={styles.messagesList}
                     dataSource={messages}
+                    rowKey={item => item._id}
                     renderItem={item => (
-                        <List.Item>
-
+                        <List.Item className={styles.item} extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}>
+                            <List.Item.Meta
+                                avatar={<Avatar src={item.avatar} size={36} />}
+                                title={<span>{truncate(item.name, 46)}</span>}
+                                description={item.unseen > 0 ? (<span>{`${item.unseen} tin nhắn chưa đọc`}</span>) : (<span>{truncate(item.lastMessage, 46)}</span>)}
+                            />
                         </List.Item>
                     )}
                 />

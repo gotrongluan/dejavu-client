@@ -1,0 +1,50 @@
+export default [
+    {
+        _id: 1,
+        type: 1,
+        content: 'Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay!',
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        createdAt: 1567476499584,
+        seen: false,
+    },
+    {
+        _id: 2,
+        type: 1,
+        content: 'Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay! Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay!',
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        createdAt: 1567476499584,
+        seen: true,
+    },
+    {
+        _id: 3,
+        type: 1,
+        content: 'Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay!',
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        createdAt: 1567476499584,
+        seen: true,
+    },
+    {
+        _id: 4,
+        type: 1,
+        content: 'Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay!',
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        createdAt: 1567476499584,
+        seen: true,
+    },
+    {
+        _id: 5,
+        type: 1,
+        content: 'Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay!',
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        createdAt: 1567476499584,
+        seen: false,
+    },
+    {
+        _id: 6,
+        type: 1,
+        content: 'Pun2912 vừa theo dõi bạn. Tương tác với cô ấy ngay!',
+        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        createdAt: 1567476499584,
+        seen: false,
+    }
+]

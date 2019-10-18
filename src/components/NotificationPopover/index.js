@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Primary';
+import NOTIFICATIONS from 'assets/faker/notifications';
+import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
+
 
 class NotificationPopover extends React.PureComponent {
     handleVisibleChange = () => {
@@ -21,9 +24,9 @@ class NotificationPopover extends React.PureComponent {
         //     //loading,
         //     //oldLoading
         // } = this.props;
-        const loading = true;
+        const loading = false;
         const oldLoading = false;
-        const notifications = [];
+        const notifications = NOTIFICATIONS;
         const content = _.isEmpty(notifications) ? (
             <div className={styles.empty}>
                 <div className={styles.inlineDiv}>
@@ -31,13 +34,17 @@ class NotificationPopover extends React.PureComponent {
                 </div>
             </div>
         ) : (
-            <Scrollbars style={{ height: 500 }} onScroll={this.handleScroll}>
+            <Scrollbars autoHeight autoHeightMax={500} onScroll={this.handleScroll}>
                 <List
-                    className={styles.itemList}
                     dataSource={notifications}
+                    rowKey={item => item._id}
                     renderItem={item => (
-                        <List.Item>
-                            1
+                        <List.Item style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}>
+                            <List.Item.Meta
+                                avatar={<Avatar src={item.avatar} size={36} />}
+                                title={<span>{truncate(item.content, 92)}</span>}
+                                description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
+                            />
                         </List.Item>
                     )}
                 />

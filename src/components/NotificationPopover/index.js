@@ -24,7 +24,7 @@ class NotificationPopover extends React.PureComponent {
         //     //loading,
         //     //oldLoading
         // } = this.props;
-        const loading = false;
+        const loading = true;
         const oldLoading = false;
         const notifications = NOTIFICATIONS;
         const content = _.isEmpty(notifications) ? (
@@ -34,7 +34,7 @@ class NotificationPopover extends React.PureComponent {
                 </div>
             </div>
         ) : (
-            <Scrollbars autoHeight autoHeightMax={500} onScroll={this.handleScroll}>
+            <Scrollbars autoHeight autoHeightMax={474} onScroll={this.handleScroll}>
                 <List
                     dataSource={notifications}
                     rowKey={item => item._id}

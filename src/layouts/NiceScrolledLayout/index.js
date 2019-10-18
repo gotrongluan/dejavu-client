@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
-import styles from './index.less';
+import styles from './index.module.less';
 
 class NiceScrolledLayout extends Component {
     render() {

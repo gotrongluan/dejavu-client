@@ -34,7 +34,7 @@ class MessengerPopover extends React.PureComponent {
                 </div>
             </div>
         ) : (
-            <Scrollbars autoHeight autoHeightMax={500} onScroll={this.handleScroll}>
+            <Scrollbars autoHeight autoHeightMax={437} onScroll={this.handleScroll}>
                 <List
                     className={styles.messagesList}
                     dataSource={messages}

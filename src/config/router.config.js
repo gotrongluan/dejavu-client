@@ -46,9 +46,25 @@ export default [
     },
     {
         key: 'exception',
-        path: '/exception:type',
+        path: '/exception',
         hideInMenu: true,
-        component: 'Exception',
+        routes: [
+            {
+                key: '404',
+                path: '/404',
+                component: 'Exception/404'
+            },
+            {
+                key: '403',
+                path: '/403',
+                component: 'Exception/403'
+            },
+            {
+                key: '500',
+                path: '/500',
+                component: 'Exception/500'
+            },
+        ]
     },
     {
         key: 'default',

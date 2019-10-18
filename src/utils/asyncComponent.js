@@ -1,5 +1,5 @@
 import React from 'react';
-//import LoadingPage from 'components/LoadingPage';
+import LoadingPage from 'components/LoadingPage';
 import { LOADING_PAGE_DELAY } from 'config/constants';
 
 const asyncComponent = (getComponent) => {
@@ -28,7 +28,7 @@ const asyncComponent = (getComponent) => {
             if (false) {
                 return <Component {...this.props} />;
             }
-            return null;
+            return <LoadingPage />
         }
     };
 };

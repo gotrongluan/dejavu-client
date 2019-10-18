@@ -14,3 +14,13 @@ export const truncate = (str, len) => {
         'separator': /,? +/
     });
 };
+
+export const range = n => {
+    let i = 0;
+    const result = [];
+    while (i < n) {
+        result.push(i);
+        i++;
+    }
+    return result;
+}

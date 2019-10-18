@@ -10,6 +10,7 @@ module.exports = override(
         javascriptEnabled: true,
         modifyVars: {
             '@primary-color': '#91EE16',
+            '@secondary-color': 'rgb(0, 21, 41)',
             '@link-color': '#91EE16',
             '@success-color': '#52c41a',
             '@warning-color': '#faad14',
@@ -22,6 +23,7 @@ module.exports = override(
             '@border-radius-base': '4px',
             '@border-color-base': '#d9d9d9',
             '@box-shadow-base': '0 2px 8px rgba(0, 0, 0, 0.15)',
+            '@sub-color': 'rgb(0, 21, 41)'
         }
     })
 )

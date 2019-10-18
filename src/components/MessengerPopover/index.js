@@ -44,7 +44,7 @@ class MessengerPopover extends React.PureComponent {
                             <List.Item.Meta
                                 avatar={<Avatar src={item.avatar} size={36} />}
                                 title={<span>{truncate(item.name, 46)}</span>}
-                                description={item.unseen > 0 ? (<span>{`${item.unseen} tin nhắn chưa đọc`}</span>) : (<span>{truncate(item.lastMessage, 46)}</span>)}
+                                description={item.unseen > 0 ? (<span style={{ color: 'yellowgreen' }}>{`${item.unseen} tin nhắn chưa đọc`}</span>) : (<span>{truncate(item.lastMessage, 46)}</span>)}
                             />
                         </List.Item>
                     )}

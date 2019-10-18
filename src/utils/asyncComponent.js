@@ -25,7 +25,7 @@ const asyncComponent = (getComponent) => {
         }
         render() {
             const { Component } = this.state;
-            if (false) {
+            if (Component) {
                 return <Component {...this.props} />;
             }
             return <LoadingPage />

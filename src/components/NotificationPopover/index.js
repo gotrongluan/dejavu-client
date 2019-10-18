@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Primary';
@@ -10,21 +11,33 @@ import styles from './index.module.less';
 
 
 class NotificationPopover extends React.PureComponent {
-    handleVisibleChange = () => {
+    state = {
+        visible: false,
+    }
 
+    handleVisibleChange = visible => {
+        this.setState({
+            visible,
+        });
     }
 
     handleScroll = () => {
 
     }
     
+    handleViewAll = () => {
+        this.setState({
+            visible: false,
+        });
+    }
+
     getContent = () => {
         // const {
         //     //messages,
         //     //loading,
         //     //oldLoading
         // } = this.props;
-        const loading = true;
+        const loading = false;
         const oldLoading = false;
         const notifications = NOTIFICATIONS;
         const content = _.isEmpty(notifications) ? (
@@ -58,13 +71,14 @@ class NotificationPopover extends React.PureComponent {
                 fontSize={24}
             >
                 <div>{content}</div>
-                <div className={styles.viewAll}>View all</div>
+                <div className={styles.viewAll} onClick={this.handleViewAll}><Link to="/notifications">View all</Link></div>
             </Spin>
         );
     }
 
     render() {
         const { unread = 0 } = this.props;
+        const { visible } = this.state;
         let count = 0;
         if (unread > 0)
             count = <Avatar style={{ background: 'red', fontSize: '11px' }} size={18}>{unread > 9 ? '9+' : unread}</Avatar>;
@@ -92,6 +106,7 @@ class NotificationPopover extends React.PureComponent {
                 arrowPointAtCenter
                 popupAlign={{ offset: [20, 0] }}
                 onVisibleChange={this.handleVisibleChange}
+                visible={visible}
             >
                 {trigger}
             </Popover>

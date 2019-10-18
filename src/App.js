@@ -21,7 +21,7 @@ class App extends PureComponent {
 					<Layout className={styles.app}>
 						<Header />
 						<NiceScrolledLayout>
-							<Content style={{ backgroundColor: 'white' }}>
+							<Content style={{ backgroundColor: 'white', marginTop: 64 }}>
 								<Switch>{ Routers.map(route => routeRender(route)) }</Switch>
 							</Content>
 							<Footer />

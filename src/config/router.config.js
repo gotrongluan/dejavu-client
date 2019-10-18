@@ -6,6 +6,12 @@ export default [
         component: 'Home',
     },
     {
+        key: 'streamers',
+        path: '/streamers',
+        text: 'Streamers',
+        component: 'Streamers'
+    },
+    {
         key: 'livestream',
         path: '/livestream',
         text: 'Live Stream',
@@ -64,6 +70,10 @@ export default [
                 path: '/500',
                 component: 'Exception/500'
             },
+            {
+                key: 'failed',
+                redirect: '/exception/404'
+            }
         ]
     },
     {

@@ -6,7 +6,7 @@ const LoadingPage = () => {
     return (
         <div className={styles.page}>
             <div className={styles.inlineDiv}>
-                <Spin size="large" fontSize={45} tip={<span style={{ fontSize: 22 }}>Loading Page...</span>} />
+                <Spin size="large" fontSize={49} />
             </div>
         </div>
     )

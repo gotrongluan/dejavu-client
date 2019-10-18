@@ -1,0 +1,51 @@
+.jumpotron {
+    .inlineDiv {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%;-50%);
+        text-align: center;
+        :global {
+            .ant-carousel {
+                color: @sub-color;
+                width: 100%;
+                .slick-dots-bottom {
+                    bottom: -12px;
+                }
+                .slick-dots {
+                    li {
+                        button {
+                            background: @sub-color,
+                        }
+                    }
+                }
+            }
+        }
+        .title {
+            font-weight: bold;
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        .slogan {
+            margin-bottom: 60px;
+            font-weight: bold;
+            font-size: 15.3px;
+        }
+        .social {
+            width: 40%;
+            margin: auto;
+        }
+        .tryIt {
+            margin-top: 40px;
+            button {
+                border-radius: 0;
+                height: 50px;
+                width: 166px;
+                font-weight: bold;
+                font-size: 16px;
+                // background: transparent;
+                // color: @primary-color;
+            }
+        }
+    }
+}

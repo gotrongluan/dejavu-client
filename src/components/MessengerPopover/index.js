@@ -78,6 +78,7 @@ class MessengerPopover extends React.PureComponent {
     }
 
     render() {
+        const { visible } = this.state;
         const { unread = 10 } = this.props;
         let count = 0;
         if (unread > 0)
@@ -104,6 +105,7 @@ class MessengerPopover extends React.PureComponent {
                 popupClassName={styles.popover}
                 trigger="click"
                 arrowPointAtCenter
+                visible={visible}
                 popupAlign={{ offset: [20, 0] }}
                 onVisibleChange={this.handleVisibleChange}
             >

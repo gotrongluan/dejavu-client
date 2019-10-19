@@ -1,17 +1,51 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import { Row, Col, Avatar, List, Collapse, Input, Button, Icon, Badge } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
+import MessagesList from 'components/Message/List';
+import PaperPlane from 'elements/Icon/PaperPlane';
 import CONVERSATIONS from 'assets/faker/messenger';
+import MESSAGES from 'assets/faker/messages';
 import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
 
 const { Panel } = Collapse;
 
+
 class Messenger extends PureComponent {
+    componentDidMount() {
+        this.refs.messagesScrollbar.scrollToBottom();
+    }
+
+    parseToMessageListsByDate = messages => {
+        let messageListsByDate = [];
+        let currentTime = null;
+        let currentObj = null;
+        for (let i = 0; i < messages.length; ++i) {
+            const message = messages[i];
+            const time = moment(message.createdAt).format("MMM D");
+            if (time !== currentTime) {
+                currentTime = time;
+                currentObj = {
+                    day: currentTime,
+                    messages: [message],
+                };
+                messageListsByDate.push(currentObj);
+            }
+            else {
+                currentObj.messages.push(message);
+            }
+        }
+        return messageListsByDate;
+    };
+
     render() {
         let conversations = CONVERSATIONS;
         conversations = _.orderBy(conversations, ['updatedAt'], ['desc']);
+        let messages = MESSAGES;
+        messages = this.parseToMessageListsByDate(messages);
+
         return (
             <Row className={styles.messenger}>
                 <Col className={styles.conversations} span={6}>
@@ -52,7 +86,32 @@ class Messenger extends PureComponent {
                     </div>
                     <Row className={styles.content}>
                         <Col className={styles.messages} span={16}>
-                            
+                            <Scrollbars
+                                height={window.innerHeight - 64 - 64 - 50}
+                                style={{ height: (window.innerHeight - 64 - 64 - 50) }}
+                                ref="messagesScrollbar"
+                            >
+                                {messages.length > 0 && (
+                                    <List
+                                        className={styles.listmessages}
+                                        itemLayout="vertical"
+                                        dataSource={messages}
+                                        split={false}
+                                        renderItem={item => {
+                                            return (
+                                                <List.Item>
+                                                    <p className={styles.date}>{item.day}</p>
+                                                    <MessagesList messages={item.messages} />
+                                                </List.Item>
+                                            );
+                                        }}
+                                    />
+                                )}
+                            </Scrollbars>
+                            <div className={styles.typeMessage}>
+                                <Input placeholder="Enter message..."/>
+                                <PaperPlane  />
+                            </div>
                         </Col>
                         <Col className={styles.info} span={8}>
                             <div className={styles.avatar}>

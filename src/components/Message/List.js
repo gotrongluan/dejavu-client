@@ -5,93 +5,34 @@ import styles from './List.module.less';
 
 class MessagesList extends React.PureComponent {
     render() {
-        const { messages, avatarsSrc, openLightbox, scrollAfterRenderImage } = this.props;
-        let currentUserId = null;
-        let key = 0;
+        const { messages } = this.props;
+        let current = null;
         return (
-            <Row className={styles.listMessages}>
+            <Row className={styles.messages}>
                 {messages.map(message => {
-                key++;
-                let avatar = null;
-                let first = false;
-                if (message.userId !== currentUserId) {
-                    first = true;
-                    let src;
-                    if (message.userType === 'user') 
-                    src = avatarsSrc[0];
-                    else if (message.userType === 'servicer') 
-                    src = avatarsSrc[1];
-                    else 
-                    src = message.avatar;
-                    if (src.trim() === '') {
-                    src = '/assets/icons/app.png';
+                    let avatar = null;
+                    let name = null;
+                    //let flag = false;
+                    if (message.userId !== current) {
+                        current = message.userId;
+                        avatar = <Avatar src={message.avatar} alt="avatar" size={36} style={{ position: 'relative', top: '5px' }}/>;
+                        name = <div className={styles.userName}>{message.userName}</div>;
+                        //flag = true;
                     }
-                    avatar = (
-                    <Avatar
-                        size={32}
-                        src={src}
-                        style={{
-                        float: message.userType !== 'user' ? 'left' : 'right',
-                        }}
-                    />
-                    );
-                    currentUserId = message.userId;
-                }
-                if (message.userType !== 'user') {
                     return (
-                    <Row
-                        key={key}
-                        style={{
-                        marginTop: first ? '7px' : 0,
-                        }}
-                    >
-                        <Col span={4}>{avatar}</Col>
-                        <Col span={16}>
-                        <Message
-                            openLightbox={openLightbox}
-                            from={'receiver'}
-                            first={first}
-                            time={message.createdAt}
-                            text={message.text}
-                            imageUrl={message.imageUrl}
-                            fileUrl={message.fileUrl}
-                            float={'left'}
-                            scrollAfterRenderImage={scrollAfterRenderImage}
-                            isSending={message.isSending}
-                        />
-                        </Col>
-                    </Row>
-                    );
-                } else {
-                    return (
-                    <Row
-                        key={key}
-                        style={{
-                        marginTop: first ? '7px' : 0,
-                        }}
-                    >
-                        <Col span={16} offset={4}>
-                        <Message
-                            openLightbox={openLightbox}
-                            from={'sender'}
-                            first={first}
-                            time={message.createdAt}
-                            seenStatus={message.seenAt}
-                            text={message.text}
-                            imageUrl={message.imageUrl}
-                            fileUrl={message.fileUrl}
-                            float={'right'}
-                            scrollAfterRenderImage={scrollAfterRenderImage}
-                            isSending={message.isSending}
-                        />
-                        </Col>
-                        <Col span={4}>{avatar}</Col>
-                    </Row>
-                    );
-                }
+                        <Row className={styles.messRow}>
+                            <Col span={1} className={styles.avatar}>
+                                {avatar}
+                            </Col>
+                            <Col span={23} className={styles.message}>
+                                <React.Fragment>{name}</React.Fragment>
+                                <Message message={message} />
+                            </Col>
+                        </Row>
+                    )
                 })}
             </Row>
-        );
+        )
     }
 }
 

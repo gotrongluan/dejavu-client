@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
-import Spin from 'elements/Spin/Primary';
+import Spin from 'elements/Spin/Second';
 import NOTIFICATIONS from 'assets/faker/notifications';
 import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
@@ -37,7 +37,7 @@ class NotificationPopover extends React.PureComponent {
         //     //loading,
         //     //oldLoading
         // } = this.props;
-        const loading = false;
+        const loading = true;
         const oldLoading = false;
         const notifications = NOTIFICATIONS;
         const content = _.isEmpty(notifications) ? (
@@ -68,7 +68,7 @@ class NotificationPopover extends React.PureComponent {
             <Spin
                 spinning={loading}
                 delay={0}
-                fontSize={24}
+                fontSize={8}
             >
                 <div>{content}</div>
                 <div className={styles.viewAll} onClick={this.handleViewAll}><Link to="/notifications">View all</Link></div>

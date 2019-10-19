@@ -19,7 +19,7 @@ export default [
     },
     {
         key: 'messenger',
-        path: '/messenger:converId',
+        path: '/messenger',
         hideInMenu: true,
         component: 'Messenger',
         icon: '',

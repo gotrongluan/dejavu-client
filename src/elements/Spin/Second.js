@@ -1,9 +1,21 @@
 import React from 'react';
-import { Spin, Icon } from 'antd';
+import { css } from '@emotion/core';
+import SyncLoader from 'react-spinners/SyncLoader';
+import { Spin } from 'antd';
 
-export default (props) => {
-    const icon = <Icon type="build" style={{ fontSize: props.fontSize }} spin theme="twoTone" twoToneColor="#91ee16"/>;
+const override = css`
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translate(0%, -50%);
+`;
+
+
+export default ({ children, fontSize, ...restProps}) => {
+    const icon = <SyncLoader css={override} sizeUnit={"px"} loading={true} size={fontSize} color={"#91EE1C"} />
     return (
-        <Spin indicator={icon} {...props} />
+        <Spin indicator={icon} {...restProps}>
+            {children}
+        </Spin>
     );
 }

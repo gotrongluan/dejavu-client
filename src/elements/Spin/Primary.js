@@ -1,9 +1,16 @@
 import React from 'react';
+import { css } from '@emotion/core';
+import ScaleLoader from 'react-spinners/ScaleLoader';
 import { Spin, Icon } from 'antd';
 
-export default (props) => {
-    const icon = <Icon type="star" style={{ fontSize: props.fontSize }} spin theme="twoTone" twoToneColor="#91ee16"/>;
+const override = css``;
+
+
+export default ({ children, fontSize, ...restProps}) => {
+    const icon = <ScaleLoader css={override} sizeUnit={"px"} loading={true} size={fontSize} color={"#91EE1C"} />
     return (
-        <Spin indicator={icon} {...props} />
+        <Spin indicator={icon} {...restProps}>
+            {children}
+        </Spin>
     );
 }

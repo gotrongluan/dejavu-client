@@ -1,20 +1,33 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
-import Spin from 'elements/Spin/Primary';
+import Spin from 'elements/Spin/Second';
 import MESSAGES from 'assets/faker/messenger';
 import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
 
 class MessengerPopover extends React.PureComponent {
-    handleVisibleChange = () => {
+    state = {
+        visible: false,
+    }
 
+    handleVisibleChange = visible => {
+        this.setState({
+            visible,
+        });
     }
 
     handleScroll = () => {
 
+    }
+
+    handleViewAll = () => {
+        this.setState({
+            visible: false,
+        });
     }
 
     getContent = () => {
@@ -23,7 +36,7 @@ class MessengerPopover extends React.PureComponent {
             //loading,
             oldLoading
         } = this.props;
-        const loading = false;
+        const loading = true;
         let messages = MESSAGES;
         //sort messages
         messages = _.orderBy(messages, ['updatedAt'], ['desc']);
@@ -56,10 +69,10 @@ class MessengerPopover extends React.PureComponent {
             <Spin
                 spinning={loading}
                 delay={0}
-                fontSize={24}
+                fontSize={8}
             >
                 <div>{content}</div>
-                <div className={styles.viewAll}>View all</div>
+                <div className={styles.viewAll} onClick={this.handleViewAll}><Link to="/messenger">View all</Link></div>
             </Spin>
         );
     }

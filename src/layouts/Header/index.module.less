@@ -18,17 +18,16 @@
         margin-left: 30px;
         background-color: transparent;
         color: #ffffff;
-        width: 70%;
+        width: 65%;
         float: left;
         margin-left: 0;
     }
     .rightContent {
-        float: left;
-        width: 300px;
+        float: right;
         .messengerPopover, .notificationPopover {
             padding: 0 15px;
             display: inline-block;
-            float: left;
+            float: right;
             line-height: 69px;
             cursor: pointer;
         }
@@ -36,15 +35,33 @@
             padding: 0 10px;
         }
         .account {
-            width: 200px;
-            float: left;
+            float: right;
             padding: 0 20px;
             line-height: 64px;
+            cursor: pointer;
+            &:hover {
+                opacity: 0.7;
+            }
             .name {
                 font-size: 14px;
                 margin-left: 10px;
-                
             }
+        }
+        
+    }
+}
+
+.content {
+    width: 160px;
+    text-align: left;
+    .profile, .coins, .pun {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .profile, .logout {
+        cursor: pointer;
+        &:hover {
+            color: @primary-color;
         }
     }
 }

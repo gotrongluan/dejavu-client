@@ -36,7 +36,7 @@ class MessengerPopover extends React.PureComponent {
             //loading,
             oldLoading
         } = this.props;
-        const loading = true;
+        const loading = false;
         let messages = MESSAGES;
         //sort messages
         messages = _.orderBy(messages, ['updatedAt'], ['desc']);

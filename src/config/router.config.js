@@ -35,14 +35,73 @@ export default [
         key: 'account',
         path: '/account',
         hideInMenu: true,
-        component: 'Account/Account',
-        icon: 'user',
+        routes: [
+            {
+                key: 'setting',
+                path: '/setting',
+                component: 'Account/Setting'
+            },
+            {
+                key: 'photo',
+                path: '/photos',
+                component: 'Account/Photos',
+            },
+            {
+                key: 'follower',
+                path: '/followers',
+                component: 'Account/Follower',
+            },
+            {
+                key: 'following',
+                path: '/following',
+                component: 'Account/Following',
+            },
+            {
+                key: 'coin',
+                path: '/coin',
+                component: 'Account/Coin',
+            },
+            {
+                key: 'default',
+                path: '/',
+                redirect: '/account/setting',
+            },
+            {
+                key: 'error',
+                redirect: '/exception/404',
+            }
+        ]
     },
     {
         key: 'streamer-account',
         path: '/streamer/:streamerId',
         hideInMenu: true,
-        component: 'Account/StreamerAccount',
+        routes: [
+            {
+                key: 'info',
+                path: '/info',
+                component: 'Streamer/Info'
+            },
+            {
+                key: 'photo',
+                path: '/photos',
+                component: 'Streamer/Photos',
+            },
+            {
+                key: 'follower',
+                path: '/followers',
+                component: 'Streamer/Follower',
+            },
+            {
+                key: 'following',
+                path: '/following',
+                component: 'Streamer/Following',
+            },
+            {
+                key: 'error',
+                redirect: '/exception/404',
+            }
+        ]
     },
     {
         key: 'view',

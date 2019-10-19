@@ -38,7 +38,6 @@ const DejavuHeader = (props) => {
                     arrowPointAtCenter={false}
                     popupAlign={{ offset: [0, 11] }}
                     popupClassName={styles.content}
-                    visible
                     content={(
                         <div>
                             <div className={styles.profile} onClick={() => history.push('/account')}>
@@ -62,8 +61,9 @@ const DejavuHeader = (props) => {
                         <span className={styles.name}>Yuna Choi</span>
                     </div>
                 </Popover>
-                <div className={styles.messengerPopover}><MessengerPopover /></div>
                 <div className={styles.notificationPopover}><NotificationPopover /></div>
+                <div className={styles.messengerPopover}><MessengerPopover /></div>
+                
 
                 {/* <div className={styles.pun}>
                     <Heart size={"28"} /><span className={styles.punAmount}>12577</span>

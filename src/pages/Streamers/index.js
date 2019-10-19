@@ -38,7 +38,7 @@ class Streamers extends React.PureComponent {
                                 <span className={styles.menuItem}>Most View</span>
                             </Menu.Item>
                             <Menu.Item key="near">
-                                <Icon type="audio" />
+                                <Icon type="environment" />
                                 <span className={styles.menuItem}>Near</span>
                             </Menu.Item>
                         </Menu>

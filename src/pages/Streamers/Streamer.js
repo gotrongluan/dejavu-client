@@ -16,8 +16,8 @@ const Streamer = ({ streamer }) => {
                 <Col span={16}>
                     <div className={styles.name}>{streamer.name}</div>
                     <div className={styles.status}>
-                        <Badge status={streamer.online ? "processing" : "error"} color={streamer.online ? "#91EE1C" : "red"} />
-                        <span style={{ color: streamer.online ? 'yellowgreen' : 'red' }}>{streamer.online ? "online" : "offline"}</span>
+                        <Badge status={streamer.online ? "processing" : "error"} color={streamer.online ? "#1890ff" : "red"} />
+                        <span style={{ color: streamer.online ? '#1890ff' : 'red' }}>{streamer.online ? "online" : "offline"}</span>
                     </div>
                     
                 </Col>

@@ -37,7 +37,7 @@ class NotificationPopover extends React.PureComponent {
         //     //loading,
         //     //oldLoading
         // } = this.props;
-        const loading = true;
+        const loading = false;
         const oldLoading = false;
         const notifications = NOTIFICATIONS;
         const content = _.isEmpty(notifications) ? (

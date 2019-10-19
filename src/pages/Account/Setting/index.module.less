@@ -1,0 +1,30 @@
+.setting {
+    padding: 60px 45px;
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+    .infoCont {
+        .info {
+            .form {
+                .name, .phone, .sex, .birthday, .address {
+                    margin-bottom: 15px;
+                }
+                .birthday {
+                    :global(.ant-calendar-picker) {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+        .avatar {
+            .inner {
+                text-align: center;
+                .uploader {
+                    margin-top: 30px;
+                }
+            }
+        }
+    }
+}

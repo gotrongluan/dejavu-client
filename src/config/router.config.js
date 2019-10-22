@@ -141,6 +141,31 @@ export default [
         redirect: '/home',
     },
     {
+        key: 'user',
+        path: '/user',
+        routes: [
+            {
+                key: 'login',
+                path: '/login',
+                component: 'User/Login'
+            },
+            {
+                key: 'signup',
+                path: '/signup',
+                component: 'User/Signup'
+            },
+            {
+                key: 'default',
+                path: '/',
+                redirect: '/user/login'
+            },
+            {
+                key: 'failed',
+                redirect: '/exception/404'
+            }
+        ]
+    },
+    {
         key: 'notfound',
         redirect: '/exception/404'
     }

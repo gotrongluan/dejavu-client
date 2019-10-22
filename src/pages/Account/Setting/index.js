@@ -89,7 +89,7 @@ class Setting extends PureComponent {
                                         ],
                                     })(<Input placeholder="Phone" />)}
                                 </Form.Item>
-                                <Form.Item label="Sex" className={styles.sex}>
+                                <Form.Item label="Gender" className={styles.sex}>
                                     <Select defaultValue="male">
                                         <Option value="male" >Male</Option>
                                         <Option value="female">Female</Option>

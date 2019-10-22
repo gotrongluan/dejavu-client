@@ -41,7 +41,7 @@ const DejavuHeader = (props) => {
                     content={(
                         <div>
                             <div className={styles.profile} onClick={() => history.push('/account')}>
-                                <Icon type="user" style={{ color: 'yellowgreen' }} /><span style={{ marginLeft: 5, fontSize: 12 }}>Profile</span>
+                                <Icon type="user" style={{ color: 'yellowgreen' }} /><span style={{ marginLeft: 5 }}>Profile</span>
                             </div>
                             <div className={styles.pun}>
                                 <Heart size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>12577</span>
@@ -51,7 +51,7 @@ const DejavuHeader = (props) => {
                             </div>
                             <Divider style={{ width: '100%', margin: 5 }}/>
                             <div className={styles.logout}>
-                                <Icon type="logout" style={{ color: 'yellowgreen' }}/><span style={{ marginLeft: 5, fontSize: 12 }}>Log out</span>
+                                <Link to="/user/login"><Icon type="logout" style={{ color: 'yellowgreen' }}/><span style={{ marginLeft: 5, color: 'rgba(0,0,0,0.65)' }}>Log out</span></Link>
                             </div>
                         </div>
                     )}

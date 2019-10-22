@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Row, Col, Form, Input, Button, Select, DatePicker } from 'antd';
 import UserWrapper from 'components/UserWrapper';
 import styles from './index.module.less';
@@ -9,12 +8,6 @@ import styles from './index.module.less';
 const { Option } = Select;
 
 class Signup extends React.PureComponent {
-    componentDidMount() {
-        const { helloWorld } = this.props;
-        //console.log('a');
-        helloWorld();
-    }
-
     handleSubmit = () => {
 
     }
@@ -111,8 +104,5 @@ class Signup extends React.PureComponent {
     }
 }
 
-const mapDispathToProps = (dispatch) => ({
-    helloWorld: () => dispatch({ type: 'GLOBAL_HELLO_WORLD' }),
-});
 
-export default withRouter(connect(() => {}, mapDispathToProps)(Form.create()(Signup)));
+export default Form.create()(Signup);

@@ -13,7 +13,6 @@ class NiceScrolledLayout extends Component {
             const handleInfiniteScroll = infiniteScroll[location.pathname];
             if (handleInfiniteScroll)
                 handleInfiniteScroll();
-            console.log(handleInfiniteScroll);
         }
         
     }

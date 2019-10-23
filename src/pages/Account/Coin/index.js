@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Row, Collapse, Button, Modal, List, Statistic } from 'antd';
+import { connect } from 'react-redux';
+import { Row, Button, Modal, List, Statistic } from 'antd';
 import AccountWrapper from 'components/AccountWrapper';
 import CoinIcon from 'elements/Icon/Coin';
 import TRANSACTIONS from 'assets/faker/transactions';
+import 
 import { fromNow } from 'utils/utils';
 import styles from './index.module.less';
 
-const { Panel } = Collapse;
 
 class Coin extends PureComponent {
     render() {
@@ -60,5 +61,18 @@ class Coin extends PureComponent {
         )
     }
 }
+
+const mapStateToProps = ({ loading, transactions, coinPolicy, global: { user } }) => ({
+    transactions: transactions,
+    coinPolicy: coinPolicy,
+    coins: user.coins,
+    fetchTransactionsLoading: loading['fetchTransactions'] || false,
+    fetchOldTransactionsLoading: loading['fetchOldTransactions'] || false,
+    fetchCoinPolicyLoading: loading['fetchCoinPolicy'] || false,
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchTransactions: () => dispatch()
+})
 
 export default Coin;

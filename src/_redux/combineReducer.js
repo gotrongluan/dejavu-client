@@ -17,7 +17,7 @@ const reducer = combineReducers({
     coinPolicy: coinPolicyReducer,
     conversations: conversationsReducer,
     followers: followersReducer,
-    following: followingReducer,
+    followings: followingReducer,
     gifts: giftsReducer,
     messages: messagesReducer,
     notifications: notificationsReducer,

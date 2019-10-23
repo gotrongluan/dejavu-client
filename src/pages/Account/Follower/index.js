@@ -5,7 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { List, Row, Avatar, Badge } from 'antd';
 import Spin from 'elements/Spin/Second';
 import AccountWrapper from 'components/AccountWrapper';
-import FOLLOWERS from 'assets/faker/followers';
 import * as FollowerActions from '_redux/actions/followers';
 import { subscribeInfiniteScroll } from 'utils/infiniteScroll';
 import styles from './index.module.less';

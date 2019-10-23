@@ -3,6 +3,7 @@ export const SAVE_USER = 'SAVE_USER';
 export const SAVE_NUM_OF_UNREAD = 'SAVE_NUM_OF_UNREAD';
 export const LOGIN = 'LOGIN';
 export const FETCH_USER = 'FETCH_USER';
+export const SAVE_COINS = 'SAVE_COINS';
 
 //loading
 export const SAVE_LOADING = 'SAVE_LOADING';
@@ -31,6 +32,7 @@ export const FETCH_OLD_TRANSACTIONS = 'FETCH_OLD_TRANSACTIONS';
 export const SAVE_TRANSACTIONS = 'SAVE_TRANSACTIONS';
 export const SAVE_OLD_TRANSACTIONS = 'SAVE_OLD_TRANSACTIONS';
 export const RESET_TRANSACTIONS = 'RESET_TRANSACTIONS';
+export const BUY_COINS = 'BUY_COINS';
 
 //coin policy
 export const FETCH_COIN_POLICY = 'FETCH_COIN_POLICY';

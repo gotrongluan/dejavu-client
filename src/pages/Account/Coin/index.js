@@ -53,7 +53,17 @@ class Coin extends PureComponent {
         });
     }
 
-    handleChange = () => {}
+    handleChange = () => {
+        const { money } = this.state;
+        if (money !== '') {
+            const { buyCoins } = this.props;
+            buyCoins(money);
+            this.setState({
+                money: '',
+                visibleGetMoreCoinsModal: false,
+            })
+        }
+    }
 
     handleCancelChange = () => {
         this.setState({
@@ -69,6 +79,7 @@ class Coin extends PureComponent {
             fetchCoinPolicyLoading,
             fetchTransactionsLoading,
             fetchOldTransactionsLoading,
+            buyCoinsLoading,
             coins
         } = this.props;
 
@@ -111,7 +122,7 @@ class Coin extends PureComponent {
                             <div className={styles.transaction}>
                                 <List
                                     dataSource={transactions}
-                                    rowKey={item => item._id}
+                                    rowKey={item => item._id + _.uniqueId("transaction_")}
                                     renderItem={item => (
                                         <List.Item
                                             actions={[
@@ -168,6 +179,13 @@ class Coin extends PureComponent {
                         </div>
                     </Row>
                 </Modal>
+                <Modal title={null} maskClosable={false} closable={false} centered footer={null} visible={buyCoinsLoading} width={150}
+                    bodyStyle={{
+                        padding: '10px'
+                    }}>
+                    <div style={{ height: '60px', position: 'relative' }}><Spin fontSize={5} /></div>
+                    <div style={{ color: '#91CC1E', textAlign: 'center' }}>Buying coins...</div>
+                </Modal>
             </AccountWrapper>
         )
     }
@@ -180,6 +198,7 @@ const mapStateToProps = ({ loading, transactions, coinPolicy, global: { user } }
     fetchTransactionsLoading: loading['fetchTransactions'] || false,
     fetchOldTransactionsLoading: loading['fetchOldTransactions'] || false,
     fetchCoinPolicyLoading: loading['fetchCoinPolicy'] || false,
+    buyCoinsLoading: loading['buyCoins'] || false,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -187,7 +206,8 @@ const mapDispatchToProps = dispatch => ({
     fetchOldTransactions: () => dispatch(TransactionActions.fetchOldTransactions()),
     fetchCoinPolicy: () => dispatch(CoinPolicyActions.fetchCoinPolicy()),
     resetTransactions: () => dispatch(TransactionActions.resetTransactions()),
-    resetCoinPolicy: () => dispatch(CoinPolicyActions.resetCoinPolicy())
+    resetCoinPolicy: () => dispatch(CoinPolicyActions.resetCoinPolicy()),
+    buyCoins: money => dispatch(TransactionActions.buyCoins(money)),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Coin));

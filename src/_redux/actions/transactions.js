@@ -21,3 +21,8 @@ export const saveOldTransactions = transactions => ({
 export const resetTransactions = () => ({
     type: ActionTypes.RESET_TRANSACTIONS
 });
+
+export const buyCoins = money => ({
+    type: ActionTypes.BUY_COINS,
+    payload: money
+});

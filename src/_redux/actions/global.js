@@ -24,3 +24,8 @@ export const fetchUser = token => ({
     type: ActionTypes.FETCH_USER,
     payload: token,
 });
+
+export const saveCoins = coins => ({
+    type: ActionTypes.SAVE_COINS,
+    payload: coins,
+});

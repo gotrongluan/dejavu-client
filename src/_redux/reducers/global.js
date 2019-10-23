@@ -18,6 +18,14 @@ export default (state = {
                 numOfUnreadMessage: action.payload.mess,
                 numOfUnreadNotification: action.payload.noti
             }
+        case ActionTypes.SAVE_COINS:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    coins: action.payload,
+                }
+            };
         default:
             return state;
     }

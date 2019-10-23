@@ -6,6 +6,7 @@ import followerSaga from './sagas/followers';
 import followingSaga from './sagas/followings';
 import transactionSaga from './sagas/transactions';
 import coinPolicySaga from './sagas/coinPolicy';
+import notificationSaga from './sagas/notifications';
 
 export function* rootSaga() {
     yield all([
@@ -16,5 +17,6 @@ export function* rootSaga() {
         coinPolicySaga(),
         messengerPopoverSaga(),
         notificationPopoverSaga(),
+        notificationSaga(),
     ]);
 }

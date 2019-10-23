@@ -2,10 +2,10 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
+import { Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Second';
-import MESSAGES from 'assets/faker/messenger';
+import * as MessengerPopoverActions from '_redux/actions/messengerPopover';
 import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
 
@@ -15,13 +15,21 @@ class MessengerPopover extends React.PureComponent {
     }
 
     handleVisibleChange = visible => {
+        const { fetchMessengerPopovers, resetMessengerPopovers } = this.props;
         this.setState({
             visible,
         });
+        if (visible) fetchMessengerPopovers();
+        else resetMessengerPopovers();
     }
 
-    handleScroll = () => {
-
+    handleScroll = e => {
+        const element = e.srcElement;
+        if (element.scrollTop === element.scrollHeight - 437) {
+            console.log('abc');
+            const { fetchOldMessengerPopovers, loading, oldLoading } = this.props;
+            if(!loading && !oldLoading) fetchOldMessengerPopovers();
+        }
     }
 
     handleViewAll = () => {
@@ -31,16 +39,14 @@ class MessengerPopover extends React.PureComponent {
     }
 
     getContent = () => {
-        const {
-            //messages,
-            //loading,
-            oldLoading
+        let {
+            messengerPopover: messages,
+            loading,
+            //oldLoading
         } = this.props;
-        const loading = false;
-        let messages = MESSAGES;
         //sort messages
-        messages = _.orderBy(messages, ['updatedAt'], ['desc']);
-        const content = _.isEmpty(messages) ? (
+        messages = messages === null ? messages : _.orderBy(messages, ['updatedAt'], ['desc']);
+        const content = (messages === null || _.isEmpty(messages)) ? (
             <div className={styles.empty}>
                 <div className={styles.inlineDiv}>
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No conversation"/>
@@ -51,7 +57,7 @@ class MessengerPopover extends React.PureComponent {
                 <List
                     className={styles.messagesList}
                     dataSource={messages}
-                    rowKey={item => item._id}
+                    rowKey={item => item._id + _.uniqueId("messenger_popover_")}
                     renderItem={item => (
                         <List.Item className={styles.item} extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}>
                             <List.Item.Meta
@@ -62,12 +68,11 @@ class MessengerPopover extends React.PureComponent {
                         </List.Item>
                     )}
                 />
-                <div className={styles.oldLoading}>{oldLoading && (<></>)}</div>
             </Scrollbars>
         );
         return (
             <Spin
-                spinning={loading}
+                spinning={loading || messages === null}
                 delay={0}
                 fontSize={8}
             >
@@ -117,6 +122,15 @@ class MessengerPopover extends React.PureComponent {
 
 const mapStateToProps = state => ({
     numOfUnreadMessage: state.global.numOfUnreadMessage,
+    loading: state.loading['fetchMessengerPopovers'] || false,
+    oldLoading: state.loading['fetchOldMessengerPopovers'] || false,
+    messengerPopover: state.messengerPopover,
 });
 
-export default connect(mapStateToProps)(MessengerPopover);
+const mapDispatchToProps = dispatch => ({
+    fetchMessengerPopovers: () => dispatch(MessengerPopoverActions.fetchMessengerPopovers()),
+    fetchOldMessengerPopovers: () => dispatch(MessengerPopoverActions.fetchOldMessengerPopovers()),
+    resetMessengerPopovers: () => dispatch(MessengerPopoverActions.resetMessengerPopovers())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessengerPopover);

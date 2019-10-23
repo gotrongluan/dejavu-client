@@ -50,7 +50,7 @@ class Follower extends PureComponent {
                             </span>
                         )}
                     </Row>
-                    {(fetchFollowersLoading || _.isEmpty(followers)) ? (
+                    {(fetchFollowersLoading || followers === null) ? (
                         <Row className={styles.loadingCont}>
                             <Spin fontSize={10} />
                         </Row>

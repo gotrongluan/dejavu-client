@@ -2,7 +2,7 @@ import * as ActionTypes from '_redux/actions/actionTypes';
 
 export default (state = {
     numOfFollower: null,
-    list: [],
+    list: null,
 }, action) => {
     switch(action.type) {
         case ActionTypes.SAVE_FOLLOWERS:
@@ -26,7 +26,7 @@ export default (state = {
         case ActionTypes.RESET_FOLLOWERS:
             return {
                 numOfFollower: null,
-                list: []
+                list: null,
             };
         default:
             return state;

@@ -5,6 +5,8 @@ import followersReducer from './reducers/followers';
 import followingReducer from './reducers/following';
 import giftsReducer from './reducers/gifts';
 import messagesReducer from './reducers/messages';
+import messengerPopoverReducer from './reducers/messengerPopover';
+import notificationPopoverReducer from './reducers/notificationPopover';
 import notificationsReducer from './reducers/notifications';
 import streamerReducer from './reducers/streamer';
 import streamersReducer from './reducers/streamers';
@@ -20,6 +22,8 @@ const reducer = combineReducers({
     followings: followingReducer,
     gifts: giftsReducer,
     messages: messagesReducer,
+    messengerPopover: messengerPopoverReducer,
+    notificationPopover: notificationPopoverReducer,
     notifications: notificationsReducer,
     streamer: streamerReducer,
     streamers: streamersReducer,

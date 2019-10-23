@@ -114,7 +114,7 @@ class Coin extends PureComponent {
                                 <Button type="primary" icon="plus" onClick={this.handleGetMoreCoins}>Buy more coins</Button>
                             </div>
                         </div>
-                        {(fetchTransactionsLoading || _.isEmpty(transactions)) ? (
+                        {(fetchTransactionsLoading || transactions === null) ? (
                             <div className={styles.loadingTrans}>
                                 <Spin fontSize={10} />
                             </div>
@@ -166,7 +166,7 @@ class Coin extends PureComponent {
                     <Row className={styles.modal}>
                         <div className={styles.title}>Conversion table</div>
                         <div>
-                            {(fetchCoinPolicyLoading || _.isEmpty(coinPolicy)) ? (
+                            {(fetchCoinPolicyLoading || coinPolicy === null) ? (
                                 <div className={styles.loadingPolicy}>
                                     <Spin fontSize={5} />
                                 </div>

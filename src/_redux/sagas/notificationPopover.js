@@ -15,7 +15,7 @@ function* fetchNotificationPopovers() {
                 reject();
             }, 2000);
         });
-        const data = NOTIFICATION_POPOVERS.slice(0, 10);
+        const data = NOTIFICATION_POPOVERS.slice(0, 8);
         yield put(NotificationPopoverActions.saveNotificationPopovers(data));
     }
     catch {
@@ -40,7 +40,7 @@ function* fetchOldNotificationPopovers() {
                 reject();
             }, 1000);
         });
-        const data = NOTIFICATION_POPOVERS.slice(11, 16);
+        const data = NOTIFICATION_POPOVERS.slice(0, 4);
         yield put(NotificationPopoverActions.saveOldNotificationPopovers(data));
     }
     catch {

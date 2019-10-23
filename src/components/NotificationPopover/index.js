@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Second';
-import NOTIFICATIONS from 'assets/faker/notifications';
+import * as NotificationPopoverActions from '_redux/actions/notificationPopover';
 import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
 
@@ -16,13 +16,20 @@ class NotificationPopover extends React.PureComponent {
     }
 
     handleVisibleChange = visible => {
+        const { fetchNotificationPopovers, resetNotificationPopovers } = this.props;
         this.setState({
             visible,
         });
+        if (visible) fetchNotificationPopovers();
+        else resetNotificationPopovers();
     }
 
-    handleScroll = () => {
-
+    handleScroll = e => {
+        const element = e.srcElement;
+        if (element.scrollTop === element.scrollHeight - 474) {
+            const { fetchOldNotificationPopovers, loading, oldLoading } = this.props;
+            if(!loading && !oldLoading) fetchOldNotificationPopovers();
+        }
     }
     
     handleViewAll = () => {
@@ -32,15 +39,12 @@ class NotificationPopover extends React.PureComponent {
     }
 
     getContent = () => {
-        // const {
-        //     //messages,
-        //     //loading,
-        //     //oldLoading
-        // } = this.props;
-        const loading = false;
-        const oldLoading = false;
-        const notifications = NOTIFICATIONS;
-        const content = _.isEmpty(notifications) ? (
+        let {
+            notificationPopover: notifications,
+            loading,
+            //oldLoading
+        } = this.props;
+        const content = (notifications === null || _.isEmpty(notifications)) ? (
             <div className={styles.empty}>
                 <div className={styles.inlineDiv}>
                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No notification"/>
@@ -50,7 +54,7 @@ class NotificationPopover extends React.PureComponent {
             <Scrollbars autoHeight autoHeightMax={474} onScroll={this.handleScroll}>
                 <List
                     dataSource={notifications}
-                    rowKey={item => item._id}
+                    rowKey={item => item._id + _.uniqueId("notification_popover_")}
                     renderItem={item => (
                         <List.Item style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}>
                             <List.Item.Meta
@@ -61,12 +65,11 @@ class NotificationPopover extends React.PureComponent {
                         </List.Item>
                     )}
                 />
-                <div className={styles.oldLoading}>{oldLoading && (<></>)}</div>
             </Scrollbars>
         );
         return (
             <Spin
-                spinning={loading}
+                spinning={loading || notifications === null}
                 delay={0}
                 fontSize={8}
             >
@@ -116,6 +119,15 @@ class NotificationPopover extends React.PureComponent {
 
 const mapStateToProps = state => ({
     numOfUnreadNotification: state.global.numOfUnreadNotification,
+    loading: state.loading['fetchNotificationPopovers'] || false,
+    oldLoading: state.loading['fetchOldNotificationPopovers'] || false,
+    notificationPopover: state.notificationPopover,
 });
 
-export default connect(mapStateToProps)(NotificationPopover);
+const mapDispatchToProps = dispatch => ({
+    fetchNotificationPopovers: () => dispatch(NotificationPopoverActions.fetchNotificationPopovers()),
+    fetchOldNotificationPopovers: () => dispatch(NotificationPopoverActions.fetchOldNotificationPopovers()),
+    resetNotificationPopovers: () => dispatch(NotificationPopoverActions.resetNotificationPopovers())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationPopover);

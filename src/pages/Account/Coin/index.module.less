@@ -26,9 +26,39 @@
                 margin-bottom: 5px;
             }
         }
+        .loadingTrans {
+            height: calc(100vh - 330.25px);
+        }
         .transaction {
             margin-top: 40px;
+            .oldLoading {
+                height: 15px;
+                position: relative;
+            }
+        }
+    }
+}
 
+.buyCoins {
+    :global(.ant-modal-title) {
+        color: @primary-color;
+    }
+    .modal {
+        .title {
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .loadingPolicy {
+            height: 392px;
+        }
+        .table {
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+        .inputCont {
+            input {
+                text-align: center;
+            }
         }
     }
 }

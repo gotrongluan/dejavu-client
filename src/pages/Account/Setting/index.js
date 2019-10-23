@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Upload, Input, Select, DatePicker, Button, Avatar, Icon, message } from 'antd';
@@ -16,16 +17,32 @@ class Setting extends PureComponent {
 
     componentDidMount() {
         const { form, user } = this.props;
-        form.setFieldsValue({
-            name: user.name,
-            bio: user.bio,
-            phone: user.phone,
-            gender: user.gender,
-            birthday: moment(user.birthday, "DD/MM/YYYY"),
-            address: user.address,
+        if (!_.isEmpty(user))
+            form.setFieldsValue({
+                name: user.name,
+                bio: user.bio,
+                phone: user.phone,
+                gender: user.gender,
+                birthday: moment(user.birthday, "DD/MM/YYYY"),
+                address: user.address,
 
-        })
+            });
     }
+
+    componentDidUpdate(prevProps) {
+        const { user, form } = this.props;
+        const { user: prevUser } = prevProps;
+        if (!_.isEmpty(user) && _.isEmpty(prevUser))
+            form.setFieldsValue({
+                name: user.name,
+                bio: user.bio,
+                phone: user.phone,
+                gender: user.gender,
+                birthday: moment(user.birthday, "DD/MM/YYYY"),
+                address: user.address,
+            });
+    }
+
     handleBeforeUpload = file => {
         this.setState({
             curAvatarFile: file,

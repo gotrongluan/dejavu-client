@@ -17,3 +17,7 @@ export const saveOldTransactions = transactions => ({
     type: ActionTypes.SAVE_OLD_TRANSACTIONS,
     payload: transactions,
 });
+
+export const resetTransactions = () => ({
+    type: ActionTypes.RESET_TRANSACTIONS
+});

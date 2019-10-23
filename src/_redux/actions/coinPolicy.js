@@ -8,3 +8,7 @@ export const saveCoinPolicy = policy => ({
     type: ActionTypes.SAVE_COIN_POLICY,
     payload: policy,
 });
+
+export const resetCoinPolicy = () => ({
+    type: ActionTypes.RESET_COIN_POLICY
+});

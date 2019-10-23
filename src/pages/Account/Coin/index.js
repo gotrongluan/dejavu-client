@@ -1,17 +1,93 @@
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Button, Modal, List, Statistic } from 'antd';
+import { Row, Button, Modal, List, Statistic, Table, Input, Icon } from 'antd';
 import AccountWrapper from 'components/AccountWrapper';
 import CoinIcon from 'elements/Icon/Coin';
-import TRANSACTIONS from 'assets/faker/transactions';
-import 
+import Spin from 'elements/Spin/Second';
+import * as CoinPolicyActions from '_redux/actions/coinPolicy';
+import * as TransactionActions from '_redux/actions/transactions';
+import { subscribeInfiniteScroll } from 'utils/infiniteScroll';
 import { fromNow } from 'utils/utils';
 import styles from './index.module.less';
 
 
 class Coin extends PureComponent {
+    state = {
+        visibleGetMoreCoinsModal: false,
+        money: '',
+    }
+
+    componentDidMount() {
+        const { fetchTransactions, location } = this.props;
+        fetchTransactions();
+        this.unsubscibeInfiniteScroll = subscribeInfiniteScroll(location.pathname, () => {
+            const { fetchOldTransactions, fetchTransactionsLoading, fetchOldTransactionsLoading } = this.props;
+            if (!fetchOldTransactionsLoading && !fetchTransactionsLoading) fetchOldTransactions();
+        })
+    }
+
+    componentWillUnmount() {
+        const { resetCoinPolicy, resetTransactions } = this.props;
+        resetCoinPolicy();
+        resetTransactions();
+        if (this.unsubscibeInfiniteScroll)
+            this.unsubscibeInfiniteScroll();
+    }
+
+    handleGetMoreCoins = () => {
+        this.setState({
+            visibleGetMoreCoinsModal: true
+        });
+        const { coinPolicy } = this.props;
+        if (_.isEmpty(coinPolicy)) {
+            const { fetchCoinPolicy } = this.props;
+            fetchCoinPolicy();
+        }
+    }
+
+    handleEnterMoney = e => {
+        this.setState({
+            money: e.target.value,
+        });
+    }
+
+    handleChange = () => {}
+
+    handleCancelChange = () => {
+        this.setState({
+            visibleGetMoreCoinsModal: false,
+            money: ''
+        });
+    }
+
     render() {
-        const transactions = TRANSACTIONS;
+        const {
+            coinPolicy,
+            transactions,
+            fetchCoinPolicyLoading,
+            fetchTransactionsLoading,
+            fetchOldTransactionsLoading,
+            coins
+        } = this.props;
+
+        const columns = [
+            {
+                key: 'money',
+                dataIndex: 'money',
+                title: 'Money',
+                render: text => <span style={{ color: '#1890ff', fontWeight: 'bold' }}>{text} đ</span>
+            },
+            {
+                key: 'coin',
+                dataIndex: 'coin',
+                className: 'coin',
+                title: 'Coin',
+                align: 'center',
+                render: text => <span style={{ color: '#91EE1C', fontWeight: 'bold' }}>{text} <CoinIcon size={16} /></span>
+            }
+        ];
 
         return (
             <AccountWrapper selectedKey="coin">
@@ -21,41 +97,76 @@ class Coin extends PureComponent {
                         <div className={styles.balanceCont}>
                             <div className={styles.balance}>
                                 <CoinIcon className={styles.icon} size={36} />
-                                <span style={{ marginLeft: 8, fontSize: 28, fontWeight: 'bold' }}>4096</span>
+                                <span style={{ marginLeft: 8, fontSize: 28, fontWeight: 'bold' }}>{coins}</span>
                             </div>
                             <div className={styles.add}>
-                                <Button type="primary" icon="plus">Get more coins</Button>
+                                <Button type="primary" icon="plus" onClick={this.handleGetMoreCoins}>Buy more coins</Button>
                             </div>
                         </div>
-                        <div className={styles.transaction}>
-                            <List
-                                dataSource={transactions}
-                                rowKey={item => item._id}
-                                renderItem={item => (
-                                    <List.Item
-                                        actions={[
-                                            <Statistic
-                                                value={item.amount}
-                                                valueStyle={{
-                                                    color: item.amount > 0 ? '#1890ff' : 'red',
-                                                    fontSize: 14
-                                                }}
-                                                suffix="xu"
+                        {(fetchTransactionsLoading || _.isEmpty(transactions)) ? (
+                            <div className={styles.loadingTrans}>
+                                <Spin fontSize={10} />
+                            </div>
+                        ) : (
+                            <div className={styles.transaction}>
+                                <List
+                                    dataSource={transactions}
+                                    rowKey={item => item._id}
+                                    renderItem={item => (
+                                        <List.Item
+                                            actions={[
+                                                <Statistic
+                                                    value={item.amount}
+                                                    valueStyle={{
+                                                        color: item.amount > 0 ? '#1890ff' : 'red',
+                                                        fontSize: 14
+                                                    }}
+                                                    suffix="xu"
+                                                />
+                                            ]}
+                                        >
+                                            <List.Item.Meta
+                                                title={<span style={{ fontWeight: 'bold' }}>{item.content}</span>}
+                                                description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
                                             />
-                                        ]}
-                                    >
-                                        <List.Item.Meta
-                                            title={<span style={{ fontWeight: 'bold' }}>{item.content}</span>}
-                                            description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
-                                        />
-                                    </List.Item>
+                                        </List.Item>
+                                    )}
+                                />
+                                {fetchOldTransactionsLoading && (
+                                    <div className={styles.oldLoading}>
+                                        <Spin fontSize={4} />
+                                    </div>
                                 )}
-                            />
-                        </div>
+                            </div>
+                        )}
+                        
                     </Row>
                 </Row>
-                <Modal>
-
+                <Modal
+                    title="Buy More Coins"
+                    visible={this.state.visibleGetMoreCoinsModal}
+                    onOk={this.handleChange}
+                    onCancel={this.handleCancelChange}
+                    okText="Buy"
+                    centered
+                    maskClosable={false}
+                    className={styles.buyCoins}
+                >
+                    <Row className={styles.modal}>
+                        <div className={styles.title}>Conversion table</div>
+                        <div>
+                            {(fetchCoinPolicyLoading || _.isEmpty(coinPolicy)) ? (
+                                <div className={styles.loadingPolicy}>
+                                    <Spin fontSize={5} />
+                                </div>
+                            ) : (
+                                <Table columns={columns} dataSource={coinPolicy} size="middle" pagination={false} className={styles.table}/>
+                            )}
+                        </div>
+                        <div className={styles.inputCont}>
+                            <Input placeholder="Enter money..." value={this.state.money} onChange={this.handleEnterMoney} addonAfter={<Icon type="transaction" />}/>
+                        </div>
+                    </Row>
                 </Modal>
             </AccountWrapper>
         )
@@ -72,7 +183,11 @@ const mapStateToProps = ({ loading, transactions, coinPolicy, global: { user } }
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchTransactions: () => dispatch()
-})
+    fetchTransactions: () => dispatch(TransactionActions.fetchTransactions()),
+    fetchOldTransactions: () => dispatch(TransactionActions.fetchOldTransactions()),
+    fetchCoinPolicy: () => dispatch(CoinPolicyActions.fetchCoinPolicy()),
+    resetTransactions: () => dispatch(TransactionActions.resetTransactions()),
+    resetCoinPolicy: () => dispatch(CoinPolicyActions.resetCoinPolicy())
+});
 
-export default Coin;
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Coin));

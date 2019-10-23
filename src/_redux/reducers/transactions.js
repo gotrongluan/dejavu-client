@@ -10,6 +10,8 @@ export default (state = [], action) => {
                 ...state,
                 ...action.payload
             ];
+        case ActionTypes.RESET_TRANSACTIONS:
+            return [];
         default:
             return state;
     }

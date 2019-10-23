@@ -1,4 +1,6 @@
 import React from 'react';
+import _  from 'lodash';
+import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Layout, Menu, Avatar, Popover, Icon, Divider } from 'antd';
 import MessengerPopover from 'components/MessengerPopover';
@@ -12,7 +14,11 @@ const { Header } = Layout;
 const MenuItem = Menu.Item;
 
 const DejavuHeader = (props) => {
-    const { location, history } = props;
+    const {
+        location,
+        history,
+        user
+    } = props;
     let selectedKey = location.pathname.slice(1);
     return (
         <Header className={styles.header}>
@@ -44,10 +50,10 @@ const DejavuHeader = (props) => {
                                 <Icon type="user" style={{ color: 'yellowgreen' }} /><span style={{ marginLeft: 5 }}>Profile</span>
                             </div>
                             <div className={styles.pun}>
-                                <Heart size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>12577</span>
+                                <Heart size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>{user.pun}</span>
                             </div>
                             <div className={styles.coins}>
-                                <Coin size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>4069</span>
+                                <Coin size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>{user.coins}</span>
                             </div>
                             <Divider style={{ width: '100%', margin: 5 }}/>
                             <div className={styles.logout}>
@@ -57,24 +63,19 @@ const DejavuHeader = (props) => {
                     )}
                 >
                     <div className={styles.account}>
-                        <Avatar style={{ backgroundColor: '#87d068' }} icon="user" size={28} />
-                        <span className={styles.name}>Yuna Choi</span>
+                        <Avatar style={{ backgroundColor: '#87d068' }} src={user.avatar} size={28} />
+                        <span className={styles.name}>{user.name}</span>
                     </div>
                 </Popover>
                 <div className={styles.notificationPopover}><NotificationPopover /></div>
-                <div className={styles.messengerPopover}><MessengerPopover /></div>
-                
-
-                {/* <div className={styles.pun}>
-                    <Heart size={"28"} /><span className={styles.punAmount}>12577</span>
-                </div>
-                <div className={styles.coins}>
-                    <Coin size={"10"} /><span className={styles.coinAmount}>4069</span>
-                </div> */}
-                
-            </div>
+                <div className={styles.messengerPopover}><MessengerPopover /></div>              
+            </div>          
         </Header>
     )
 }
 
-export default withRouter(DejavuHeader);
+const mapStateToProps = state => ({
+    user: state.global.user,
+});
+
+export default withRouter(connect(mapStateToProps)(DejavuHeader));

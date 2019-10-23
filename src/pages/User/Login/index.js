@@ -1,16 +1,35 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Row, Col, Form, Input, Button, Checkbox, Icon } from 'antd';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import { Link, withRouter } from 'react-router-dom';
+import { Row, Col, Form, Input, Button, Checkbox, Icon, message } from 'antd';
 import UserWrapper from 'components/UserWrapper';
+import Spin from 'elements/Spin/Second';
+import USER from 'assets/faker/user';
+import * as GlobalActions from '_redux/actions/global';
 import styles from './index.module.less';
 
 class Login extends React.PureComponent {
-    handleSubmit = () => {
+    handleSubmit = e => {
+        e.preventDefault();
+        const {
+            login,
+            form,
+            location
+        } = this.props;
+        const errors = form.getFieldsError();
 
+        if (_.some(errors, err => err)) return message.error('Invalid input values, please try again!');
+        const { phone, password } = form.getFieldsValue();
+        if (!phone || phone.trim().length === 0) return message.error('Your phone must not be empty!');
+        if (!password || password.trim().length === 0) return message.error('Your password must not be empty');
+        const { from } = location.state || { from: { pathname: '/home' } };
+        login(phone, password, from);
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { loading } = this.props;
         return (
             <UserWrapper>
                 <Row className={styles.login}>
@@ -53,7 +72,7 @@ class Login extends React.PureComponent {
                                 Forgot password
                             </Link>
                             <Button type="primary" htmlType="submit" className={styles.btn} size="large">
-                                Log in
+                                {loading ? (<Spin fontSize={4} isCenter={false} color="white"/>) : 'Log in'}
                             </Button>
                             Or <Link to="/user/signup">register now!</Link>
                             </Form.Item>
@@ -65,4 +84,12 @@ class Login extends React.PureComponent {
     }
 }
 
-export default Form.create()(Login);
+const mapStateToProps = ({ loading }) => ({
+    loading: loading['login'] || false
+});
+
+const mapDispatchToProps = dispatch => ({
+    login: (phone, password, from) => dispatch(GlobalActions.login(phone, password, from)),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(Login)));

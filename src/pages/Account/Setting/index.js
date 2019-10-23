@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
+import { connect } from 'react-redux';
 import { Form, Row, Col, Upload, Input, Select, DatePicker, Button, Avatar, Icon, message } from 'antd';
 import AccountWrapper from 'components/AccountWrapper';
 import styles from './index.module.less';
@@ -13,7 +14,19 @@ class Setting extends PureComponent {
         curAvatarFile: null,
     }
 
-   handleBeforeUpload = file => {
+    componentDidMount() {
+        const { form, user } = this.props;
+        form.setFieldsValue({
+            name: user.name,
+            bio: user.bio,
+            phone: user.phone,
+            gender: user.gender,
+            birthday: moment(user.birthday, "DD/MM/YYYY"),
+            address: user.address,
+
+        })
+    }
+    handleBeforeUpload = file => {
         this.setState({
             curAvatarFile: file,
         });
@@ -39,7 +52,8 @@ class Setting extends PureComponent {
         const {
             form: {
                 getFieldDecorator
-            }
+            },
+            user: { avatar }
         } = this.props;
 
         return (
@@ -90,23 +104,18 @@ class Setting extends PureComponent {
                                     })(<Input placeholder="Phone" />)}
                                 </Form.Item>
                                 <Form.Item label="Gender" className={styles.sex}>
-                                    <Select defaultValue="male">
-                                        <Option value="male" >Male</Option>
-                                        <Option value="female">Female</Option>
-                                    </Select>
+                                    {getFieldDecorator('gender')(
+                                        <Select>
+                                            <Option value="male" >Male</Option>
+                                            <Option value="female">Female</Option>
+                                        </Select>
+                                    )}
                                 </Form.Item>
                                 <Form.Item label="Birthday" className={styles.birthday}>
-                                    <DatePicker defaultValue={moment()} placeholder="Birthday" />
+                                    {getFieldDecorator('birthday')(<DatePicker placeholder="Birthday" />)}
                                 </Form.Item>
                                 <Form.Item label="Address" className={styles.address}>
-                                    {getFieldDecorator('address', {
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: 'Please enter your address'
-                                            }
-                                        ]
-                                    })(<Input placeholder="Address" />)}
+                                    {getFieldDecorator('address')(<Input placeholder="Address" />)}
                                 </Form.Item>
                                 <Form.Item className={styles.submit}>
                                     <Button htmlType="submit" type="primary">Update</Button>
@@ -117,7 +126,7 @@ class Setting extends PureComponent {
                             <div className={styles.inner}>
                                 <Avatar
                                     size={222}
-                                    src="https://scontent-lhr3-1.cdninstagram.com/v/t51.2885-15/e35/66508279_474547686658570_7891180244535792443_n.jpg?_nc_ht=scontent-lhr3-1.cdninstagram.com&_nc_cat=110&se=7&oh=8e04ca60f461d4f6669e64cd99a884b9&oe=5E0CFB7E&ig_cache_key=MjExOTY2NjYwMjYzODE0MjYwNA%3D%3D.2"
+                                    src={avatar}
                                     alt="avatar"
                                     style={{ boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.19)'}}
                                 />
@@ -151,4 +160,8 @@ class Setting extends PureComponent {
     }
 }
 
-export default Form.create()(Setting);
+const mapStateToProps = state => ({
+    user: state.global.user,
+});
+
+export default connect(mapStateToProps)(Form.create()(Setting));

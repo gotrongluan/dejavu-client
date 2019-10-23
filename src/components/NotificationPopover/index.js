@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
+import { Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Second';
 import NOTIFICATIONS from 'assets/faker/notifications';
@@ -77,7 +77,7 @@ class NotificationPopover extends React.PureComponent {
     }
 
     render() {
-        const { unread = 0 } = this.props;
+        const { numOfUnreadNotification: unread } = this.props;
         const { visible } = this.state;
         let count = 0;
         if (unread > 0)
@@ -114,4 +114,8 @@ class NotificationPopover extends React.PureComponent {
     }
 }
 
-export default NotificationPopover;
+const mapStateToProps = state => ({
+    numOfUnreadNotification: state.global.numOfUnreadNotification,
+});
+
+export default connect(mapStateToProps)(NotificationPopover);

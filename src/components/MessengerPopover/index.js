@@ -79,7 +79,7 @@ class MessengerPopover extends React.PureComponent {
 
     render() {
         const { visible } = this.state;
-        const { unread = 10 } = this.props;
+        const { numOfUnreadMessage: unread } = this.props;
         let count = 0;
         if (unread > 0)
             count = <Avatar style={{ background: 'red', fontSize: '11px' }} size={18}>{unread > 9 ? '9+' : unread}</Avatar>;
@@ -115,4 +115,8 @@ class MessengerPopover extends React.PureComponent {
     }
 }
 
-export default MessengerPopover;
+const mapStateToProps = state => ({
+    numOfUnreadMessage: state.global.numOfUnreadMessage,
+});
+
+export default connect(mapStateToProps)(MessengerPopover);

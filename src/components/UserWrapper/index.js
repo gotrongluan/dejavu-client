@@ -3,6 +3,7 @@ import { Row } from 'antd';
 import background from 'assets/images/background-login.svg';
 import styles from './index.module.less';
 
+console.log('Hello');
 const UserWrapper = ({ children }) => {
     return (
         <Row className={styles.userWrapper} style={{ background: `url(${background})` }}>

@@ -11,7 +11,7 @@ class Following extends PureComponent {
         return (
             <AccountWrapper selectedKey="following">
                 <Row className={styles.following}>
-                    <Row className={styles.title}>Followings</Row>
+                    <Row className={styles.title}>Followings<span style={{ marginLeft: 8 }}><Badge count={124} showZero overflowCount={1000000} style={{ zIndex: 1 }} /></span></Row>
                     <Row className={styles.followingCont}>
                         <List
                             itemLayout="horizontal"

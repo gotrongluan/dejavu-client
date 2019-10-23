@@ -1,0 +1,17 @@
+//global
+export const SAVE_USER = 'SAVE_USER';
+export const SAVE_NUM_OF_UNREAD = 'SAVE_NUM_OF_UNREAD';
+export const LOGIN = 'LOGIN';
+export const FETCH_USER = 'FETCH_USER';
+
+//loading
+export const SAVE_LOADING = 'SAVE_LOADING';
+
+//followers
+export const FETCH_FOLLOWERS = 'FETCH_FOLLOWERS';
+export const FETCH_OLD_FOLLOWERS = 'FETCH_OLD_FOLLOWES';
+export const FETCH_NUM_OF_FOLLOWER = 'FETCH_NUM_OF_FOLLOWER';
+export const SAVE_FOLLOWERS = 'SAVE_FOLLOWERS';
+export const SAVE_OLD_FOLLOWERS = 'SAVE_OLD_FOLLOWES';
+export const SAVE_NUM_OF_FOLLOWER = 'SAVE_NUM_OF_FOLLOWER';
+export const RESET_FOLLOWERS = 'RESET_FOLLOWERS'

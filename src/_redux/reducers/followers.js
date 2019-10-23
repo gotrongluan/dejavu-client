@@ -23,6 +23,11 @@ export default (state = {
                 ...state,
                 numOfFollower: action.payload
             };
+        case ActionTypes.RESET_FOLLOWERS:
+            return {
+                numOfFollower: null,
+                list: []
+            };
         default:
             return state;
     }

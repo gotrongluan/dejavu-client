@@ -77,6 +77,11 @@ class Follower extends PureComponent {
                                     </List.Item>
                                 )}
                             />
+                            {fetchFollowersOldLoading && (
+                                <div className={styles.oldLoading}>
+                                    <Spin fontSize={4} />
+                                </div>
+                            )}
                         </Row>
                     )}
                     

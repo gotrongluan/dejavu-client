@@ -1,4 +1,5 @@
-import { all, takeEvery, takeLastest, put } from 'redux-saga/effects';
+import { all, takeEvery, put } from 'redux-saga/effects';
+import { takeFirst } from 'utils/takeFirst';
 import { notification } from 'antd';
 import * as ActionTypes from '_redux/actions/actionTypes';
 import * as FollowerActions from '_redux/actions/followers';
@@ -37,9 +38,9 @@ function* fetchOldFollowers() {
             setTimeout(() => {
                 if (Math.random() > -1) return resolve();
                 reject();
-            }, 2000);
+            }, 1000);
         });
-        const data = FOLLOWERS.slice(11, 10);
+        const data = FOLLOWERS.slice(11, 16);
         yield put(FollowerActions.saveOldFollowers(data));
     }
     catch {
@@ -52,7 +53,7 @@ function* fetchOldFollowers() {
 }
 
 function* fetchOldFollowersWatcher() {
-    yield takeLastest(ActionTypes.FETCH_OLD_FOLLOWERS, fetchOldFollowers);
+    yield takeFirst(ActionTypes.FETCH_OLD_FOLLOWERS, fetchOldFollowers);
 }
 
 function* fetchNumOfFollower() {

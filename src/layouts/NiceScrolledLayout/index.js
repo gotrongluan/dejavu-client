@@ -8,9 +8,14 @@ import styles from './index.module.less';
 class NiceScrolledLayout extends Component {
     handleScroll = e => {
         const { location } = this.props;
-
-        //const handleInfiniteScroll = infiniteScroll[location.pathname];
-        console.log(e);
+        const element = e.srcElement;
+        if (element.scrollTop === element.scrollHeight - window.innerHeight) {
+            const handleInfiniteScroll = infiniteScroll[location.pathname];
+            if (handleInfiniteScroll)
+                handleInfiniteScroll();
+            console.log(handleInfiniteScroll);
+        }
+        
     }
 
     render() {

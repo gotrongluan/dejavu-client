@@ -68,7 +68,11 @@ class Messenger extends PureComponent {
     }
 
     handleClickConver = converId => {
-        
+        const { fetchMessages, fetchCurrentUser, currentUser } = this.props;
+        if (currentUser.converId !== converId) {
+            fetchMessages(converId);
+            fetchCurrentUser(converId);
+        }
     }
 
     render() {

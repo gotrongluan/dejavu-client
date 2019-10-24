@@ -1,11 +1,13 @@
 import * as ActionTypes from './actionTypes';
 
-export const fetchMessages = () => ({
-    type: ActionTypes.FETCH_MESSAGES
+export const fetchMessages = converId => ({
+    type: ActionTypes.FETCH_MESSAGES,
+    payload: converId,
 });
 
-export const fetchOldMessages = () => ({
-    type: ActionTypes.FETCH_OLD_MESSAGES
+export const fetchOldMessages = converId => ({
+    type: ActionTypes.FETCH_OLD_MESSAGES,
+    payload: converId,
 });
 
 export const saveMessages = messages => ({
@@ -22,8 +24,9 @@ export const resetMessages = () => ({
     type: ActionTypes.RESET_MESSAGES
 });
 
-export const fetchCurrentUser = () => ({
-    type: ActionTypes.FETCH_CURRENT_USER
+export const fetchCurrentUser = converId => ({
+    type: ActionTypes.FETCH_CURRENT_USER,
+    payload: converId,
 });
 
 export const saveCurrentUser = user => ({

@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
+import classNames from 'classnames';
 import _ from 'lodash';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Row, Col, Avatar, List, Collapse, Input, Button, Icon, Badge } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
+import MessageView from './MessageView';
 import Spin from 'elements/Spin/Second';
 import PageHeaderWrapper from 'components/PageHeaderWrapper/withoutScroll';
-import MessagesList from 'components/Message/List';
 import PaperPlane from 'elements/Icon/PaperPlane';
 import * as ConversationActions from '_redux/actions/conversations';
 import * as MessageActions from '_redux/actions/messages';
@@ -18,11 +19,6 @@ const { Panel } = Collapse;
 
 
 class Messenger extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.messageView = React.createRef();
-    }
-
     componentDidMount() {
         const { fetchConversations } = this.props;
         fetchConversations();
@@ -63,6 +59,14 @@ class Messenger extends PureComponent {
         return messageListsByDate;
     };
 
+    handleScrollConverList = e => {
+        const element = e.srcElement;
+        if (element.scrollTop === element.scrollHeight - (window.innerHeight - 128)) {
+            const { fetchOldConversations, converLoading, converOldLoading } = this.props;
+            if (!converLoading && !converOldLoading) fetchOldConversations();
+        }
+    }
+
     render() {
         let {
             messages,
@@ -92,6 +96,7 @@ class Messenger extends PureComponent {
                             <Scrollbars
                                 autoHeight
                                 autoHeightMax={window.innerHeight - (64 + 64)}
+                                onScroll={this.handleScrollConverList}
                             >
                                 {conversations === null || converLoading ? (
                                     <div style={{ height: `${window.innerHeight - (64 + 64)}px`, width: '100%'}}>
@@ -102,9 +107,12 @@ class Messenger extends PureComponent {
                                         <List
                                             className={styles.conversationsList}
                                             dataSource={conversations}
-                                            rowKey={item => item._id}
+                                            rowKey={item => item._id + _.uniqueId('conver_')}
                                             renderItem={item => (
-                                                <List.Item className={styles.item} extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}>
+                                                <List.Item 
+                                                    className={(currentUser && (currentUser.converId === item._id)) ? classNames(styles.item, styles.select) : styles.item}
+                                                    extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}
+                                                >
                                                     <List.Item.Meta
                                                         avatar={<Avatar src={item.avatar} size={36} />}
                                                         title={<span>{truncate(item.name, 46)}</span>}
@@ -138,28 +146,13 @@ class Messenger extends PureComponent {
                         </div>
                         <Row className={styles.content}>
                             <Col className={styles.messages} span={16}>
-                                <Scrollbars
-                                    height={window.innerHeight - 64 - 64 - 50}
-                                    style={{ height: (window.innerHeight - 64 - 64 - 50) }}
-                                    ref={this.messageView}
-                                >
-                                    {messages.length > 0 && (
-                                        <List
-                                            className={styles.listmessages}
-                                            itemLayout="vertical"
-                                            dataSource={messages}
-                                            split={false}
-                                            renderItem={item => {
-                                                return (
-                                                    <List.Item>
-                                                        <p className={styles.date}>{item.day}</p>
-                                                        <MessagesList messages={item.messages} />
-                                                    </List.Item>
-                                                );
-                                            }}
-                                        />
-                                    )}
-                                </Scrollbars>
+                                {messagesLoading ? (
+                                    <div style={{ height: `${window.innerHeight - 64 - 64 - 50}px`, position: 'relative'}}>
+                                        <Spin fontSize={6} />
+                                    </div>
+                                ) : (
+                                    <MessageView messages={messages} />
+                                )}
                                 <div className={styles.typeMessage}>
                                     <Input placeholder="Enter message..." disabled={disabledInput}/>
                                     <PaperPlane />
@@ -172,6 +165,11 @@ class Messenger extends PureComponent {
                                             <Avatar size={111} src={currentUser.avatar} />
                                             <div className={styles.name}>{currentUser.name}</div>
                                         </React.Fragment>
+                                    )}
+                                    {currentLoading && (
+                                        <div className={styles.avatarLoading}>
+                                            <Spin fontSize={5} />
+                                        </div>
                                     )}
                                 </div>
                                 <Collapse
@@ -206,6 +204,11 @@ class Messenger extends PureComponent {
                                                     </Col>
                                                 </Row>
                                             </React.Fragment>
+                                        )}
+                                        {currentLoading && (
+                                            <div className={styles.optionLoading}>
+                                                <Spin fontSize={5} />
+                                            </div>
                                         )}
                                     </Panel>
                                     <Panel header={<span style={{ color: 'gray', fontWeight: 'bold' }}>SHARED IMAGES</span>} key="images">

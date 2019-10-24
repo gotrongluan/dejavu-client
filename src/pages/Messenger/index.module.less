@@ -26,11 +26,20 @@
             :global(.ant-list-item) {
                 padding-left: 10px;
                 padding-right: 10px;
+                cursor: pointer;
+                &:hover {
+                    background-color: #fafafa;
+                }
+            }
+            .select {
+                background-color: rgba(245, 222, 179, 0.2);
+                border-right: 2px solid @sub-color;
             }
             .oldConverLoading {
                 height: 15px;
                 position: relative;
-                margin-top: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
             }
         }
         height: calc(100vh - 64px);
@@ -77,6 +86,15 @@
                         font-weight: bold;
                         margin-top: 10px;
                     }
+                    .avatarLoading {
+                        height: 100px;
+                        position: relative;
+                        transform: translate(-50%, 0%);
+                    }
+                }
+                .optionLoading {
+                    position: relative;
+                    height: 250px;
                 }
                 .option {
                     margin-bottom: 10px;
@@ -127,20 +145,6 @@
                         margin-left: 13px;
                         position: relative;
                         top: 5px;
-                    }
-                }
-                .listmessages {
-                    padding: 10px;
-                    :global(.ant-list-item) {
-                        padding: 0;
-                    }
-                    p.date {
-                        text-align: center;
-                        color: wheat;
-                        font-weight: bold;
-                        font-size: 13px;
-                        margin-bottom: 5px;
-                        margin-top: 10px;
                     }
                 }
             }

@@ -20,7 +20,7 @@ class MessagesList extends React.PureComponent {
                         //flag = true;
                     }
                     return (
-                        <Row className={styles.messRow}>
+                        <Row key={message._id} className={styles.messRow}>
                             <Col span={1} className={styles.avatar}>
                                 {avatar}
                             </Col>

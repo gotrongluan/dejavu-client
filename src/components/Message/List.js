@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Avatar, Row, Col } from 'antd';
 import Message from 'components/Message';
 import styles from './List.module.less';
@@ -20,7 +21,7 @@ class MessagesList extends React.PureComponent {
                         //flag = true;
                     }
                     return (
-                        <Row key={message._id} className={styles.messRow}>
+                        <Row key={message._id + _.uniqueId('message_')} className={styles.messRow}>
                             <Col span={1} className={styles.avatar}>
                                 {avatar}
                             </Col>

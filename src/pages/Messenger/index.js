@@ -67,6 +67,10 @@ class Messenger extends PureComponent {
         }
     }
 
+    handleClickConver = converId => {
+        
+    }
+
     render() {
         let {
             messages,
@@ -77,6 +81,7 @@ class Messenger extends PureComponent {
             converLoading,
             converOldLoading,
             currentLoading,
+            fetchOldMessages,
             history
         } = this.props;
 
@@ -112,6 +117,7 @@ class Messenger extends PureComponent {
                                                 <List.Item 
                                                     className={(currentUser && (currentUser.converId === item._id)) ? classNames(styles.item, styles.select) : styles.item}
                                                     extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}
+                                                    onClick={() => this.handleClickConver(item._id)}
                                                 >
                                                     <List.Item.Meta
                                                         avatar={<Avatar src={item.avatar} size={36} />}
@@ -151,7 +157,12 @@ class Messenger extends PureComponent {
                                         <Spin fontSize={6} />
                                     </div>
                                 ) : (
-                                    <MessageView messages={messages} />
+                                    <MessageView 
+                                        messages={messages}
+                                        converId={currentUser && currentUser.converId || null}
+                                        fetchOldMessages={fetchOldMessages}
+                                        oldLoading={messagesOldLoading}
+                                    />
                                 )}
                                 <div className={styles.typeMessage}>
                                     <Input placeholder="Enter message..." disabled={disabledInput}/>

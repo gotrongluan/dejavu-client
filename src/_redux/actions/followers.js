@@ -1,36 +1,36 @@
-import * as ActionTypes from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 export const fetchFollowers = () => ({
-    type: ActionTypes.FETCH_FOLLOWERS,
+    type: actionTypes.FETCH_FOLLOWERS,
 });
 
 export const fetchOldFollowers = () => ({
-    type: ActionTypes.FETCH_OLD_FOLLOWERS,
+    type: actionTypes.FETCH_OLD_FOLLOWERS,
 });
 
 export const fetchNumOfFollower = () => ({
-    type: ActionTypes.FETCH_NUM_OF_FOLLOWER,
+    type: actionTypes.FETCH_NUM_OF_FOLLOWER,
 });
 
 export const saveFollowers = followers => ({
-    type: ActionTypes.SAVE_FOLLOWERS,
+    type: actionTypes.SAVE_FOLLOWERS,
     payload: followers,
 });
 
 export const saveOldFollowers = followers => ({
-    type: ActionTypes.SAVE_OLD_FOLLOWERS,
+    type: actionTypes.SAVE_OLD_FOLLOWERS,
     payload: followers,
 });
 
 export const saveNumOfFollower = val => ({
-    type: ActionTypes.SAVE_NUM_OF_FOLLOWER,
+    type: actionTypes.SAVE_NUM_OF_FOLLOWER,
     payload: val,
 });
 
 export const resetFollowers = () => ({
-    type: ActionTypes.RESET_FOLLOWERS,
+    type: actionTypes.RESET_FOLLOWERS,
 });
 
 export const toggleFollowersHasmore = () => ({
-    type: ActionTypes.TOGGLE_FOLLOWERS_HASMORE
+    type: actionTypes.TOGGLE_FOLLOWERS_HASMORE
 });

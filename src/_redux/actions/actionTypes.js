@@ -4,6 +4,8 @@ export const SAVE_NUM_OF_UNREAD = 'SAVE_NUM_OF_UNREAD';
 export const LOGIN = 'LOGIN';
 export const FETCH_USER = 'FETCH_USER';
 export const SAVE_COINS = 'SAVE_COINS';
+export const LOGOUT = 'LOGOUT';
+export const RESET_USER = 'RESET_USER';
 
 //loading
 export const SAVE_LOADING = 'SAVE_LOADING';

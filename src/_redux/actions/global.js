@@ -1,19 +1,19 @@
-import * as ActionTypes from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 export const saveUser = user => ({
-    type: ActionTypes.SAVE_USER,
+    type: actionTypes.SAVE_USER,
     payload: user,
 });
 
 export const saveNumOfUnread = (mess, noti) => ({
-    type: ActionTypes.SAVE_NUM_OF_UNREAD,
+    type: actionTypes.SAVE_NUM_OF_UNREAD,
     payload: {
         mess, noti,
     }
 });
 
 export const login = (phone, password, from) => ({
-    type: ActionTypes.LOGIN,
+    type: actionTypes.LOGIN,
     from: from,
     payload: {
         phone, password,
@@ -21,11 +21,19 @@ export const login = (phone, password, from) => ({
 });
 
 export const fetchUser = token => ({
-    type: ActionTypes.FETCH_USER,
+    type: actionTypes.FETCH_USER,
     payload: token,
 });
 
 export const saveCoins = coins => ({
-    type: ActionTypes.SAVE_COINS,
+    type: actionTypes.SAVE_COINS,
     payload: coins,
+});
+
+export const logout = () => ({
+    type: actionTypes.LOGOUT
+});
+
+export const resetUser = () => ({
+    type: actionTypes.RESET_USER
 });

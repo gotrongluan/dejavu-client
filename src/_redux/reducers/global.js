@@ -1,4 +1,4 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
+import * as actionTypes from '_redux/actions/actionTypes';
 //import USER from 'assets/faker/user';
 
 export default (state = {
@@ -7,24 +7,30 @@ export default (state = {
     numOfUnreadNotification: 0,
 }, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_USER:
+        case actionTypes.SAVE_USER:
             return {
                 ...state,
                 user: { ...action.payload }
             };
-        case ActionTypes.SAVE_NUM_OF_UNREAD:
+        case actionTypes.SAVE_NUM_OF_UNREAD:
             return {
                 ...state,
                 numOfUnreadMessage: action.payload.mess,
                 numOfUnreadNotification: action.payload.noti
             }
-        case ActionTypes.SAVE_COINS:
+        case actionTypes.SAVE_COINS:
             return {
                 ...state,
                 user: {
                     ...state.user,
-                    coins: action.payload,
+                    coin: action.payload,
                 }
+            };
+        case actionTypes.RESET_USER:
+            return {
+                user: {},
+                numOfUnreadMessage: 0,
+                numOfUnreadNotification: 0
             };
         default:
             return state;

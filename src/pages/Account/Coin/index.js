@@ -80,7 +80,7 @@ class Coin extends PureComponent {
             fetchTransactionsLoading,
             fetchOldTransactionsLoading,
             buyCoinsLoading,
-            coins
+            coin
         } = this.props;
 
         const columns = [
@@ -108,7 +108,7 @@ class Coin extends PureComponent {
                         <div className={styles.balanceCont}>
                             <div className={styles.balance}>
                                 <CoinIcon className={styles.icon} size={36} />
-                                <span style={{ marginLeft: 8, fontSize: 28, fontWeight: 'bold' }}>{coins}</span>
+                                <span style={{ marginLeft: 8, fontSize: 28, fontWeight: 'bold' }}>{coin}</span>
                             </div>
                             <div className={styles.add}>
                                 <Button type="primary" icon="plus" onClick={this.handleGetMoreCoins}>Buy more coins</Button>
@@ -194,7 +194,7 @@ class Coin extends PureComponent {
 const mapStateToProps = ({ loading, transactions, coinPolicy, global: { user } }) => ({
     transactions: transactions,
     coinPolicy: coinPolicy,
-    coins: user.coins,
+    coin: user.coin,
     fetchTransactionsLoading: loading['fetchTransactions'] || false,
     fetchOldTransactionsLoading: loading['fetchOldTransactions'] || false,
     fetchCoinPolicyLoading: loading['fetchCoinPolicy'] || false,

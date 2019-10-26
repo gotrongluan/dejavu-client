@@ -1,6 +1,7 @@
 import React from 'react';
 import _  from 'lodash';
 import { connect } from 'react-redux';
+import * as globalActions from '_redux/actions/global';
 import { Link, withRouter } from 'react-router-dom';
 import { Layout, Menu, Avatar, Popover, Icon, Divider } from 'antd';
 import MessengerPopover from 'components/MessengerPopover';
@@ -17,9 +18,11 @@ const DejavuHeader = (props) => {
     const {
         location,
         history,
-        user
+        user,
+        logout
     } = props;
     let selectedKey = location.pathname.slice(1);
+    const handleLogout = () => logout();
     return (
         <Header className={styles.header}>
             <div className={styles.logo}>Dejavu</div>
@@ -53,11 +56,11 @@ const DejavuHeader = (props) => {
                                 <Heart size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>{user.pun}</span>
                             </div>
                             <div className={styles.coins}>
-                                <Coin size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>{user.coins}</span>
+                                <Coin size={"14"} /><span style={{ marginLeft: 5, fontSize: 12 }}>{user.coin}</span>
                             </div>
                             <Divider style={{ width: '100%', margin: 5 }}/>
-                            <div className={styles.logout}>
-                                <Link to="/user/login"><Icon type="logout" style={{ color: 'yellowgreen' }}/><span style={{ marginLeft: 5, color: 'rgba(0,0,0,0.65)' }}>Log out</span></Link>
+                            <div className={styles.logout} onClick={handleLogout}>
+                                <Icon type="logout" style={{ color: 'yellowgreen' }}/><span style={{ marginLeft: 5, color: 'rgba(0,0,0,0.65)' }}>Log out</span>
                             </div>
                         </div>
                     )}
@@ -76,6 +79,10 @@ const DejavuHeader = (props) => {
 
 const mapStateToProps = state => ({
     user: state.global.user,
+});
+
+const mapDispatchToProps = dispatch => ({
+    logout: () => dispatch(globalActions.logout())
 });
 
 export default withRouter(connect(mapStateToProps)(DejavuHeader));

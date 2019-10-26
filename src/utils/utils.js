@@ -23,4 +23,10 @@ export const range = n => {
         i++;
     }
     return result;
-}
+};
+
+export const toQueryString= json => {
+    return Object.keys(json)
+      .map(k => `${k}=${encodeURIComponent(json[k])}`)
+      .join('&');
+};

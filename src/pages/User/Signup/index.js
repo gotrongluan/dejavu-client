@@ -1,19 +1,50 @@
 import React from 'react';
+import _ from 'lodash';
 import moment from 'moment';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Form, Input, Button, Select, DatePicker } from 'antd';
+import { Row, Col, Form, Input, Button, Select, DatePicker, message } from 'antd';
 import UserWrapper from 'components/UserWrapper';
+import Spin from 'elements/Spin/Second';
+import * as globalActions from '_redux/actions/global';
 import styles from './index.module.less';
 
 const { Option } = Select;
 
 class Signup extends React.PureComponent {
-    handleSubmit = () => {
+    componentDidMount() {
+        const { form } = this.props;
+        form.setFieldsValue({
+            gender: 'male',
+            birthday: moment()
+        });
+    }
 
+    handleSubmit = e => {
+        e.preventDefault();
+        const {
+            signup,
+            form,
+        } = this.props;
+        const errors = form.getFieldsError();
+
+        if (_.some(errors, err => err)) return message.error('Invalid input values, please try again!');
+        const { name, phone, address, password, gender, birthday } = form.getFieldsValue();
+        if (!phone || phone.trim().length === 0) return message.error('Your phone must not be empty!');
+        if (!password || password.trim().length === 0) return message.error('Your password must not be empty');
+        if (!name || name.trim().length === 0) return message.error('Your name must not be empty!');
+        let info = {
+            name, password, phone, gender,
+            birthday: birthday.format("DD/MM/YYYY")
+        };
+        if (address !== '')
+            info = { ...info, address };
+        signup(info);
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { loading } = this.props;
         return (
             <UserWrapper>
                 <Row className={styles.signup}>
@@ -35,15 +66,19 @@ class Signup extends React.PureComponent {
                             <Row gutter={16}>
                                 <Col span={12}>
                                     <Form.Item>
-                                        <Select defaultValue="male" placeholder="Gender" size="large">
-                                            <Option value="male" >Male</Option>
-                                            <Option value="female">Female</Option>
-                                        </Select>
+                                        {getFieldDecorator('gender')(
+                                            <Select placeholder="Gender" size="large">
+                                                <Option value="male" >Male</Option>
+                                                <Option value="female">Female</Option>
+                                            </Select>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item>
-                                        <DatePicker defaultValue={moment()} placeholder="Birthday" size="large"/>
+                                        {getFieldDecorator('birthday')(
+                                            <DatePicker placeholder="Birthday" size="large"/>
+                                        )}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -59,15 +94,10 @@ class Signup extends React.PureComponent {
                                 )}
                             </Form.Item>
                             <Form.Item>
-                                {getFieldDecorator('address', {
-                                    rules: [
-                                        { required: true, message: 'Please enter your address!' },
-                                    ],
-                                })(
+                                {getFieldDecorator('address')(
                                     <Input
                                         placeholder="Address"
                                         size="large"
-                                        defaultValue="268 Ly Thuong Kiet St., Ward 14, District 10, Ho Chi Minh"
                                     />,
                                 )}
                             </Form.Item>
@@ -92,7 +122,7 @@ class Signup extends React.PureComponent {
                             </Form.Item>
                             <Form.Item>
                                 <Button type="primary" htmlType="submit" className={styles.btn} size="large">
-                                    Register
+                                    {loading ? (<Spin fontSize={4} isCenter={false} color="white"/>) : 'Register'}
                                 </Button>
                                 Or <Link to="/user/login">Already have an account!</Link>
                             </Form.Item>
@@ -104,5 +134,12 @@ class Signup extends React.PureComponent {
     }
 }
 
+const mapStateToProps = ({ loading }) => ({
+    loading: loading['signup'] || false
+});
 
-export default Form.create()(Signup);
+const mapDispatchToProps = dispatch => ({
+    signup: info => dispatch(globalActions.signup(info))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Signup));

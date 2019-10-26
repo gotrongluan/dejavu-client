@@ -1,85 +1,64 @@
-import { all, takeEvery, put, fork } from 'redux-saga/effects';
+import { all, takeEvery, put, fork, call, select } from 'redux-saga/effects';
 import { takeFirst } from 'utils/takeFirst';
-import { notification } from 'antd';
-import * as ActionTypes from '_redux/actions/actionTypes';
-import * as TransactionActions from '_redux/actions/transactions';
-import * as LoadingActions from '_redux/actions/loading';
-import * as GlobalActions from '_redux/actions/global';
-import TRANSACTIONS from 'assets/faker/transactions';
+import * as actionTypes from '_redux/actions/actionTypes';
+import * as transactionActions from '_redux/actions/transactions';
+import * as loadingActions from '_redux/actions/loading';
+import * as globalActions from '_redux/actions/global';
+import * as transactionServices from 'services/transactions';
+import { delay } from 'utils/utils';
 
 function* fetchTransactions() {
-    yield put(LoadingActions.saveLoading('fetchTransactions', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 2000);
-        });
-        const data = TRANSACTIONS.slice(0, 10);
-        yield put(TransactionActions.saveTransactions(data));
+    yield put(loadingActions.saveLoading('fetchTransactions', true));
+    const response = yield call(transactionServices.fetch, { page: 1, limit: 12 });
+    if (response) {
+        const { data: transactions } = response;
+        yield put(transactionActions.saveTransactions(transactions));
+        if (transactions.length < 12)
+            yield put(transactionActions.saveHasmore(false));
+        else
+            yield put(transactionActions.saveHasmore(true));
+        
     }
-    catch {
-        notification.error({
-            message: 'Fetch transactions failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchTransactions', false));
+    yield put(loadingActions.saveLoading('fetchTransactions', false));
 }
 
 function* fetchTransactionsWatcher() {
-    yield takeEvery(ActionTypes.FETCH_TRANSACTIONS, fetchTransactions);
+    yield takeEvery(actionTypes.FETCH_TRANSACTIONS, fetchTransactions);
 }
 
 function* fetchOldTransactions() {
-    yield put(LoadingActions.saveLoading('fetchOldTransactions', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 1000);
-        });
-        const data = TRANSACTIONS.slice(11, 16);
-        yield put(TransactionActions.saveOldTransactions(data));
+    yield put(loadingActions.saveLoading('fetchOldTransactions', true));
+    const { list: transactions, hasMore } = yield select(state => state.transactions);
+    if (hasMore) {
+        const response = yield call(transactionServices.fetch, { page: (transactions.length / 6) + 1, limit: 6 });
+        if (response) {
+            const { data: oldTransactions } = response;
+            yield delay(700);
+            yield put(transactionActions.saveOldTransactions(oldTransactions));
+            if (oldTransactions.length < 6)
+                yield put(transactionActions.saveHasmore(false));
+        }
     }
-    catch {
-        notification.error({
-            message: 'Fetch old transactions failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchOldTransactions', false));
+    yield put(loadingActions.saveLoading('fetchOldTransactions', false));
 }
 
 function* fetchOldTransactionsWatcher() {
-    yield takeFirst(ActionTypes.FETCH_OLD_TRANSACTIONS, fetchOldTransactions);
+    yield takeFirst(actionTypes.FETCH_OLD_TRANSACTIONS, fetchOldTransactions);
 }
 
-function* buyCoins() {
-    yield put(LoadingActions.saveLoading('buyCoins', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 1000);
-        });
+function* buyCoins({ payload: money }) {
+    yield put(loadingActions.saveLoading('buyCoins', true));
+    const response = yield call(transactionServices.buyCoins, money);
+    if (response) {
+        const { data: { coin } } = response;
         yield fork(fetchTransactions);
-        yield put(GlobalActions.saveCoins(6699));
+        yield put(globalActions.saveCoins(coin));
     }
-    catch {
-        notification.error({
-            message: 'Buy coins failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('buyCoins', false));
+    yield put(loadingActions.saveLoading('buyCoins', false));
 }
 
 function* buyCoinsWatcher() {
-    yield takeFirst(ActionTypes.BUY_COINS, buyCoins);
+    yield takeFirst(actionTypes.BUY_COINS, buyCoins);
 }
 
 export default function* () {

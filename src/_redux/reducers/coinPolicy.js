@@ -1,10 +1,10 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
+import * as actionTypes from '_redux/actions/actionTypes';
 
 export default (state = null, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_COIN_POLICY:
+        case actionTypes.SAVE_COIN_POLICY:
             return [...action.payload];
-        case ActionTypes.RESET_COIN_POLICY:
+        case actionTypes.RESET_COIN_POLICY:
             return null;
         default:
             return state;

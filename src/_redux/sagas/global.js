@@ -1,10 +1,8 @@
 import { all, put, call, takeEvery } from 'redux-saga/effects';
-import { notification } from 'antd';
 import * as actionTypes from '_redux/actions/actionTypes';
 import * as globalActions from '_redux/actions/global';
 import * as loadingActions from '_redux/actions/loading';
 import * as globalServices from 'services/global';
-import USER from 'assets/faker/user';
 import storage from 'utils/storage';
 import { history } from 'utils/history';
 
@@ -27,24 +25,17 @@ function* loginWatcher() {
     yield takeEvery(actionTypes.LOGIN, login);
 }
 
-function* fetchUser({ payload: token }) {
+function* fetchUser() {
     yield put(loadingActions.saveLoading('fetchUser', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 1000);
-        });
-        yield put(globalActions.saveUser(USER));
-        yield put(globalActions.saveNumOfUnread(6, 7));
-    }
-    catch {
-        notification.error({
-            message: 'Internal Server Error',
-            description: 'Please check again!'
-        });
-        history.push('/user/login');
+    const response = yield call(globalServices.fetchUser);
+    if (response) {
+        const {
+            data: {
+                user, unreads
+            }
+        } = response;
+        yield put(globalActions.saveUser(user));
+        yield put(globalActions.saveNumOfUnread(unreads.message, unreads.notification));
     }
     yield put(loadingActions.saveLoading('fetchUser', false));
 }
@@ -63,10 +54,22 @@ function* logoutWatcher() {
     yield takeEvery(actionTypes.LOGOUT, logout);
 }
 
+function* signup({ payload: info }) {
+    yield put(loadingActions.saveLoading('signup', true));
+    const response = yield call(globalServices.signup, info);
+    if (response) history.push('/user/login');
+    yield put(loadingActions.saveLoading('signup', false));
+}
+
+function* signupWatcher() {
+    yield takeEvery(actionTypes.SIGN_UP, signup);
+}
+
 export default function* () {
     yield all([
         loginWatcher(),
         fetchUserWatcher(),
-        logoutWatcher()
+        logoutWatcher(),
+        signupWatcher()
     ]);
 }

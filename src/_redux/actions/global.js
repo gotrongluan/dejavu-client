@@ -20,9 +20,8 @@ export const login = (phone, password, from) => ({
     }
 });
 
-export const fetchUser = token => ({
-    type: actionTypes.FETCH_USER,
-    payload: token,
+export const fetchUser = () => ({
+    type: actionTypes.FETCH_USER
 });
 
 export const saveCoins = coins => ({
@@ -36,4 +35,9 @@ export const logout = () => ({
 
 export const resetUser = () => ({
     type: actionTypes.RESET_USER
+});
+
+export const signup = info => ({
+    type: actionTypes.SIGN_UP,
+    payload: info
 });

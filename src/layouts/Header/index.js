@@ -85,4 +85,4 @@ const mapDispatchToProps = dispatch => ({
     logout: () => dispatch(globalActions.logout())
 });
 
-export default withRouter(connect(mapStateToProps)(DejavuHeader));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DejavuHeader));

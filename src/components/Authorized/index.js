@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Redirect, withRouter } from 'react-router-dom';
 import storage from 'utils/storage';
-import * as GlobalActions from '_redux/actions/global';
+import * as globalActions from '_redux/actions/global';
 import LoadingPage from 'components/LoadingPage';
 
 class Authorized extends React.PureComponent {
@@ -23,7 +23,7 @@ class Authorized extends React.PureComponent {
                     isAuthorized: 'failed',
                 });
             }
-            else fetchUser(token);
+            else fetchUser();
         }
     }
 
@@ -34,7 +34,6 @@ class Authorized extends React.PureComponent {
             this.setState({
                 isAuthorized: 'authenticated',
             });
-        
     }
 
     render() {
@@ -60,7 +59,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchUser: token => dispatch(GlobalActions.fetchUser(token))
+    fetchUser: () => dispatch(globalActions.fetchUser())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Authorized));

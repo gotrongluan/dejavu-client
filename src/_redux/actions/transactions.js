@@ -26,3 +26,8 @@ export const buyCoins = money => ({
     type: ActionTypes.BUY_COINS,
     payload: money
 });
+
+export const saveHasmore = val => ({
+    type: ActionTypes.SAVE_TRANSACTIONS_HASMORE,
+    payload: val
+});

@@ -1,83 +1,57 @@
-import { all, takeEvery, put } from 'redux-saga/effects';
+import { all, call, takeEvery, put, select } from 'redux-saga/effects';
 import { takeFirst } from 'utils/takeFirst';
-import { notification } from 'antd';
-import * as ActionTypes from '_redux/actions/actionTypes';
-import * as FollowerActions from '_redux/actions/followers';
-import * as LoadingActions from '_redux/actions/loading';
-import FOLLOWERS from 'assets/faker/followers';
+import * as actionTypes from '_redux/actions/actionTypes';
+import * as followerActions from '_redux/actions/followers';
+import * as loadingActions from '_redux/actions/loading';
+import * as followerServices from 'services/followers';
 
 function* fetchFollowers() {
-    yield put(LoadingActions.saveLoading('fetchFollowers', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 2000);
-        });
-        const data = FOLLOWERS.slice(0, 10);
-        yield put(FollowerActions.saveFollowers(data));
+    yield put(loadingActions.saveLoading('fetchFollowers', true));
+    const response = yield call(followerServices.fetch, { page: 1, limit: 12 });
+    if (response) {
+        const { data: followers } = response;
+        yield put(followerActions.saveFollowers(followers));
+        if (followers.length < 12)
+            yield put(followerActions.toggleFollowersHasmore());
     }
-    catch {
-        notification.error({
-            message: 'Fetch followers failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchFollowers', false));
+    yield put(loadingActions.saveLoading('fetchFollowers', false));
 }
 
 function* fetchFollowersWatcher() {
-    yield takeEvery(ActionTypes.FETCH_FOLLOWERS, fetchFollowers);
+    yield takeEvery(actionTypes.FETCH_FOLLOWERS, fetchFollowers);
 }
 
 function* fetchOldFollowers() {
-    yield put(LoadingActions.saveLoading('fetchOldFollowers', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 1000);
-        });
-        const data = FOLLOWERS.slice(11, 16);
-        yield put(FollowerActions.saveOldFollowers(data));
+    yield put(loadingActions.saveLoading('fetchOldFollowers', true));
+    const { list: followers, hasMore } = yield select(state => state.followers);
+    if (hasMore) {
+        const response = yield call(followerServices.fetch, { page: (followers.length / 6) + 1, limit: 6 });
+        if (response) {
+            const { data: oldFollowers } = response;
+            yield put(followerActions.saveOldFollowers(oldFollowers));
+            if (oldFollowers.length < 6)
+                yield put(followerActions.toggleFollowersHasmore());
+        }
     }
-    catch {
-        notification.error({
-            message: 'Fetch old followers failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchOldFollowers', false));
+    yield put(loadingActions.saveLoading('fetchOldFollowers', false));
 }
 
 function* fetchOldFollowersWatcher() {
-    yield takeFirst(ActionTypes.FETCH_OLD_FOLLOWERS, fetchOldFollowers);
+    yield takeFirst(actionTypes.FETCH_OLD_FOLLOWERS, fetchOldFollowers);
 }
 
 function* fetchNumOfFollower() {
-    yield put(LoadingActions.saveLoading('fetchNumOfFollower', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 1400);
-        });
-        yield put(FollowerActions.saveNumOfFollower(124));
+    yield put(loadingActions.saveLoading('fetchNumOfFollower', true));
+    const response = yield call(followerServices.fetchNumOfFollower);
+    if (response) {
+        const { data: value } = response;
+        yield put(followerActions.saveNumOfFollower(value));
     }
-    catch {
-        notification.error({
-            message: 'Fetch number of follower failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchNumOfFollower', false));
+    yield put(loadingActions.saveLoading('fetchNumOfFollower', false));
 }
 
 function* fetchNumOfFollowerWatcher() {
-    yield takeEvery(ActionTypes.FETCH_NUM_OF_FOLLOWER, fetchNumOfFollower);
+    yield takeEvery(actionTypes.FETCH_NUM_OF_FOLLOWER, fetchNumOfFollower);
 }
 
 export default function* () {

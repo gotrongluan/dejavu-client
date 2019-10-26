@@ -39,7 +39,6 @@ class ErrorWithReponse extends Error {
 }
 
 function checkStatus(response) {
-    console.log(response);
     if (response.status >= 200 && response.status < 300) {
         return response;
     }
@@ -123,7 +122,7 @@ export default async function request(url, options) {
             });
             const status = e.name;
             if (status === 401 && window.location.pathname !== '/user/login')
-                history.push('/users/login');
+                history.push('/user/login');
             return catchErrorResponse ? e : undefined;
         });
 };

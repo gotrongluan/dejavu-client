@@ -1,16 +1,17 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
+import * as actionTypes from '_redux/actions/actionTypes';
 
 export default (state = {
     numOfFollowing: null,
+    hasMore: true,
     list: null,
 }, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_FOLLOWINGS:
+        case actionTypes.SAVE_FOLLOWINGS:
             return {
                 ...state,
                 list: [...action.payload]
             };
-        case ActionTypes.SAVE_OLD_FOLLOWINGS:
+        case actionTypes.SAVE_OLD_FOLLOWINGS:
             return {
                 ...state,
                 list: [
@@ -18,15 +19,21 @@ export default (state = {
                     ...action.payload
                 ]
             };
-        case ActionTypes.SAVE_NUM_OF_FOLLOWING:
+        case actionTypes.SAVE_NUM_OF_FOLLOWING:
             return {
                 ...state,
                 numOfFollowing: action.payload
             };
-        case ActionTypes.RESET_FOLLOWINGS:
+        case actionTypes.RESET_FOLLOWINGS:
             return {
                 numOfFollowing: null,
+                hasMore: true,
                 list: null
+            };
+        case actionTypes.TOGGLE_FOLLOWINGS_HASMORE:
+            return {
+                ...state,
+                hasMore: false
             };
         default:
             return state;

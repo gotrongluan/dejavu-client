@@ -1,8 +1,8 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
+import * as actionTypes from '_redux/actions/actionTypes';
 
 export default (state = {}, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_LOADING:
+        case actionTypes.SAVE_LOADING:
             return {
                 ...state,
                 [action.payload.key]: action.payload.val

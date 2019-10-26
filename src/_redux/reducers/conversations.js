@@ -1,15 +1,15 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
+import * as actionTypes from '_redux/actions/actionTypes';
 
 export default (state = null, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_CONVERSATIONS:
+        case actionTypes.SAVE_CONVERSATIONS:
             return { ...action.payload };
-        case ActionTypes.SAVE_OLD_CONVERSATIONS:
+        case actionTypes.SAVE_OLD_CONVERSATIONS:
             return {
                 ...state,
                 ...action.payload,
             };
-        case ActionTypes.RESET_CONVERSATIONS:
+        case actionTypes.RESET_CONVERSATIONS:
             return null;
         default:
             return state;

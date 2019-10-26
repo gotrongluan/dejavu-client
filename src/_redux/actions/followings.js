@@ -30,3 +30,7 @@ export const saveNumOfFollowing = val => ({
 export const resetFollowings = () => ({
     type: ActionTypes.RESET_FOLLOWINGS,
 });
+
+export const toggleFollowingsHasmore = () => ({
+    type: ActionTypes.TOGGLE_FOLLOWINGS_HASMORE
+});

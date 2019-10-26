@@ -1,33 +1,23 @@
-import { takeEvery, put, all } from 'redux-saga/effects';
-import { notification } from 'antd';
-import * as ActionTypes from '_redux/actions/actionTypes';
-import * as CoinPolicyActions from '_redux/actions/coinPolicy';
-import * as LoadingActions from '_redux/actions/loading';
-import COIN_POLICY from 'assets/faker/coinPolicy';
+import { takeEvery, call, put, all } from 'redux-saga/effects';
+import * as actionTypes from '_redux/actions/actionTypes';
+import * as coinPolicyActions from '_redux/actions/coinPolicy';
+import * as loadingActions from '_redux/actions/loading';
+import * as coinPolicyServices from 'services/coinPolicy';
+import { delay } from 'utils/utils';
 
 function* fetchCoinPolicy() {
-    yield put(LoadingActions.saveLoading('fetchCoinPolicy', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 2000);
-        });
-        const data = COIN_POLICY;
-        yield put(CoinPolicyActions.saveCoinPolicy(data));
+    yield put(loadingActions.saveLoading('fetchcoinPolicy', true));
+    const response = yield call(coinPolicyServices.fetch);
+    if (response) {
+        const { data: policy } = response;
+        yield delay(600);
+        yield put(coinPolicyActions.saveCoinPolicy(policy));
     }
-    catch {
-        notification.error({
-            message: 'Fetch policy failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchCoinPolicy', false));
+    yield put(loadingActions.saveLoading('fetchcoinPolicy', false));
 }
 
 function* fetchCoinPolicyWatcher() {
-    yield takeEvery(ActionTypes.FETCH_COIN_POLICY, fetchCoinPolicy);
+    yield takeEvery(actionTypes.FETCH_COIN_POLICY, fetchCoinPolicy);
 }
 
 export default function*() {

@@ -2,10 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
-import { Row, Col, Form, Input, Button, Checkbox, Icon, message } from 'antd';
+import { Row, Form, Input, Button, Checkbox, Icon, message } from 'antd';
 import UserWrapper from 'components/UserWrapper';
 import Spin from 'elements/Spin/Second';
-import USER from 'assets/faker/user';
 import * as GlobalActions from '_redux/actions/global';
 import styles from './index.module.less';
 

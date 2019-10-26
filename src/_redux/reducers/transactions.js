@@ -1,17 +1,33 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
-import { access } from 'fs';
+import * as actionTypes from '_redux/actions/actionTypes';
 
-export default (state = null, action) => {
+export default (state = {
+    hasMore: true,
+    list: null
+}, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_TRANSACTIONS:
-            return [...action.payload];
-        case ActionTypes.SAVE_OLD_TRANSACTIONS:
-            return [
+        case actionTypes.SAVE_TRANSACTIONS:
+            return {
                 ...state,
-                ...action.payload
-            ];
-        case ActionTypes.RESET_TRANSACTIONS:
-            return null;
+                list: [ ...action.payload ]
+            };
+        case actionTypes.SAVE_OLD_TRANSACTIONS:
+            return {
+                ...state,
+                list: [
+                    ...state.list,
+                    ...action.payload
+                ]
+            };
+        case actionTypes.RESET_TRANSACTIONS:
+            return {
+                hasMore: true,
+                list: null
+            };
+        case actionTypes.SAVE_TRANSACTIONS_HASMORE:
+            return {
+                ...state,
+                hasMore: action.payload
+            };
         default:
             return state;
     }

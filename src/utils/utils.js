@@ -30,3 +30,5 @@ export const toQueryString= json => {
       .map(k => `${k}=${encodeURIComponent(json[k])}`)
       .join('&');
 };
+
+export const delay = ms => new Promise((res, rej) => setTimeout(res, ms));

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Button, Modal, List, Statistic, Table, Input, Icon } from 'antd';
@@ -138,7 +139,7 @@ class Coin extends PureComponent {
                                         >
                                             <List.Item.Meta
                                                 title={<span style={{ fontWeight: 'bold' }}>{item.content}</span>}
-                                                description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
+                                                description={<span style={{ fontSize: 13, color: 'gray'}}>{ moment(item.createdAt).format("HH:mm - DD/MM/YYYY") }</span>}
                                             />
                                         </List.Item>
                                     )}
@@ -192,7 +193,7 @@ class Coin extends PureComponent {
 }
 
 const mapStateToProps = ({ loading, transactions, coinPolicy, global: { user } }) => ({
-    transactions: transactions,
+    transactions: transactions.list,
     coinPolicy: coinPolicy,
     coin: user.coin,
     fetchTransactionsLoading: loading['fetchTransactions'] || false,

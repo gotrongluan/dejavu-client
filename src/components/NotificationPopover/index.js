@@ -121,7 +121,7 @@ const mapStateToProps = state => ({
     numOfUnreadNotification: state.global.numOfUnreadNotification,
     loading: state.loading['fetchNotificationPopovers'] || false,
     oldLoading: state.loading['fetchOldNotificationPopovers'] || false,
-    notificationPopover: state.notificationPopover,
+    notificationPopover: state.notificationPopover.list,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,24 +1,27 @@
-import * as ActionTypes from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 export const fetchNotificationPopovers = () => ({
-    type: ActionTypes.FETCH_NOTIFICATION_POPOVERS,
+    type: actionTypes.FETCH_NOTIFICATION_POPOVERS,
 });
 
 export const fetchOldNotificationPopovers = () => ({
-    type: ActionTypes.FETCH_OLD_NOTIFICATION_POPOVERS,
+    type: actionTypes.FETCH_OLD_NOTIFICATION_POPOVERS,
 });
 
 export const saveNotificationPopovers = notificationPopovers => ({
-    type: ActionTypes.SAVE_NOTIFICATION_POPOVERS,
+    type: actionTypes.SAVE_NOTIFICATION_POPOVERS,
     payload: notificationPopovers,
 });
 
 export const saveOldNotificationPopovers = notificationPopovers => ({
-    type: ActionTypes.SAVE_OLD_NOTIFICATION_POPOVERS,
+    type: actionTypes.SAVE_OLD_NOTIFICATION_POPOVERS,
     payload: notificationPopovers,
 });
 
-
 export const resetNotificationPopovers = () => ({
-    type: ActionTypes.RESET_NOTIFICATION_POPOVERS
+    type: actionTypes.RESET_NOTIFICATION_POPOVERS
+});
+
+export const toggleNotiPopHasmore = () => ({
+    type: actionTypes.TOGGLE_NOTI_POP_HASMORE
 });

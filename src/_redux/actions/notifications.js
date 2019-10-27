@@ -1,23 +1,32 @@
-import * as ActionTypes from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 export const fetchNotifications = () => ({
-    type: ActionTypes.FETCH_NOTIFICATIONS
+    type: actionTypes.FETCH_NOTIFICATIONS
 });
 
 export const fetchOldNotifications = () => ({
-    type: ActionTypes.FETCH_OLD_NOTIFICATIONS
+    type: actionTypes.FETCH_OLD_NOTIFICATIONS
 });
 
 export const saveNotifications = notifications => ({
-    type: ActionTypes.SAVE_NOTIFICATIONS,
+    type: actionTypes.SAVE_NOTIFICATIONS,
     payload: notifications,
 });
 
 export const saveOldNotifications = notifications => ({
-    type: ActionTypes.SAVE_OLD_NOTIFICATIONS,
+    type: actionTypes.SAVE_OLD_NOTIFICATIONS,
     payload: notifications,
 });
 
 export const resetNotifications = () => ({
-    type: ActionTypes.RESET_NOTIFICATIONS
+    type: actionTypes.RESET_NOTIFICATIONS
+});
+
+export const readNoti = id => ({
+    type: actionTypes.READ_NOTIFICATIONS,
+    payload: id
+});
+
+export const toggleNotiHasmore = () => ({
+    type: actionTypes.TOGGLE_NOTI_HASMORE
 });

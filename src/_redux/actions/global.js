@@ -41,3 +41,8 @@ export const signup = info => ({
     type: actionTypes.SIGN_UP,
     payload: info
 });
+
+export const saveNumOfUnreadNoti = val => ({
+    type: actionTypes.SAVE_NUM_OF_UNREAD_NOTI,
+    payload: val
+});

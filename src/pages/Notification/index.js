@@ -5,7 +5,7 @@ import { Row, Col, List, Divider, Avatar } from 'antd';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import Spin from 'elements/Spin/Second';
 import { subscribeInfiniteScroll } from 'utils/infiniteScroll';
-import * as NotificationActions from '_redux/actions/notifications';
+import * as notificationActions from '_redux/actions/notifications';
 import { fromNow } from 'utils/utils';
 import styles from './index.module.less';
 
@@ -24,6 +24,24 @@ class Notification extends PureComponent {
         resetNotifications();
         if (this.unsubscribeInfiniteScroll) this.unsubscribeInfiniteScroll();
     }
+
+    handleReadNoti = item => {
+        const { history } = this.props;
+        if (!item.seen) {
+            const { readNoti } = this.props;
+            readNoti(item._id);
+        }
+
+        switch(item.type) {
+            case 1:
+            case 2:
+                history.push('/account/followers');
+                break;
+            default:
+                history.push('/notifications');
+        }
+    }
+
     render() {
         const {
             loading,
@@ -45,13 +63,15 @@ class Notification extends PureComponent {
                                 dataSource={notifications}
                                 rowKey={item => item._id}
                                 renderItem={item => (
-                                    <List.Item style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}>
-                                        <List.Item.Meta
-                                            avatar={<Avatar src={item.avatar} size={36} />}
-                                            title={<span style={{ fontWeight: 400 }}>{item.content}</span>}
-                                            description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
-                                        />
-                                    </List.Item>
+                                    <div className={styles.notiItem} onClick={() => this.handleReadNoti(item)}>
+                                        <List.Item style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}>
+                                            <List.Item.Meta
+                                                avatar={<Avatar src={item.avatar} size={36} />}
+                                                title={<span style={{ fontWeight: 400 }}>{item.content}</span>}
+                                                description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
+                                            />
+                                        </List.Item>
+                                    </div>
                                 )}
                             />
                         </Row>
@@ -69,13 +89,14 @@ class Notification extends PureComponent {
 const mapStateToProps = ({ notifications, loading }) => ({
     loading: loading['fetchNotifications'] || false,
     oldLoading: loading['fetchOldNotifications'] || false,
-    notifications: notifications
+    notifications: notifications.list
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchNotifications: () => dispatch(NotificationActions.fetchNotifications()),
-    fetchOldNotifications: () => dispatch(NotificationActions.fetchOldNotifications()),
-    resetNotifications: () => dispatch(NotificationActions.resetNotifications()),
+    fetchNotifications: () => dispatch(notificationActions.fetchNotifications()),
+    fetchOldNotifications: () => dispatch(notificationActions.fetchOldNotifications()),
+    resetNotifications: () => dispatch(notificationActions.resetNotifications()),
+    readNoti: id => dispatch(notificationActions.readNoti(id)),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Notification));

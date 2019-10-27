@@ -32,6 +32,11 @@ export default (state = {
                 numOfUnreadMessage: 0,
                 numOfUnreadNotification: 0
             };
+        case actionTypes.SAVE_NUM_OF_UNREAD_NOTI:
+            return {
+                ...state,
+                numOfUnreadNotification: action.payload
+            }
         default:
             return state;
     }

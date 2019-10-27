@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 import { Popover, List, Badge, Avatar, Icon, Empty } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Spin from 'elements/Spin/Second';
-import * as NotificationPopoverActions from '_redux/actions/notificationPopover';
+import * as notificationPopoverActions from '_redux/actions/notificationPopover';
+import * as notificationActions from '_redux/actions/notifications';
 import { fromNow, truncate } from 'utils/utils';
+import { history } from 'utils/history';
 import styles from './index.module.less';
 
 
@@ -33,9 +35,23 @@ class NotificationPopover extends React.PureComponent {
     }
     
     handleViewAll = () => {
-        this.setState({
-            visible: false,
-        });
+        this.handleVisibleChange(false);
+    }
+
+    handleViewNoti = item => {
+        if (!item.seen) {
+            const { readNoti } = this.props;
+            readNoti(item._id);
+        }
+        this.handleVisibleChange(false);
+        switch(item.type) {
+            case 1:
+            case 2:
+                history.push('/account/followers');
+                break;
+            default:
+                history.push('/notifications');
+        }
     }
 
     getContent = () => {
@@ -56,13 +72,15 @@ class NotificationPopover extends React.PureComponent {
                     dataSource={notifications}
                     rowKey={item => item._id + _.uniqueId("notification_popover_")}
                     renderItem={item => (
-                        <List.Item style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}>
-                            <List.Item.Meta
-                                avatar={<Avatar src={item.avatar} size={36} />}
-                                title={<span>{truncate(item.content, 92)}</span>}
-                                description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
-                            />
-                        </List.Item>
+                        <div className={styles.notiItem} onClick={() => this.handleViewNoti(item)}>
+                            <List.Item style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}>
+                                <List.Item.Meta
+                                    avatar={<Avatar src={item.avatar} size={36} />}
+                                    title={<span>{truncate(item.content, 92)}</span>}
+                                    description={<span style={{ fontSize: 13, color: 'gray'}}>{ fromNow(item.createdAt) }</span>}
+                                />
+                            </List.Item>
+                        </div>
                     )}
                 />
             </Scrollbars>
@@ -125,9 +143,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchNotificationPopovers: () => dispatch(NotificationPopoverActions.fetchNotificationPopovers()),
-    fetchOldNotificationPopovers: () => dispatch(NotificationPopoverActions.fetchOldNotificationPopovers()),
-    resetNotificationPopovers: () => dispatch(NotificationPopoverActions.resetNotificationPopovers())
-})
+    fetchNotificationPopovers: () => dispatch(notificationPopoverActions.fetchNotificationPopovers()),
+    fetchOldNotificationPopovers: () => dispatch(notificationPopoverActions.fetchOldNotificationPopovers()),
+    resetNotificationPopovers: () => dispatch(notificationPopoverActions.resetNotificationPopovers()),
+    readNoti: id => dispatch(notificationActions.readNoti(id)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationPopover);

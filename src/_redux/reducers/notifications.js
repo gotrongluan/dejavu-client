@@ -1,16 +1,33 @@
-import * as ActionTypes from '_redux/actions/actionTypes';
+import * as actionTypes from '_redux/actions/actionTypes';
 
-export default (state = null, action) => {
+export default (state = {
+    hasMore: true,
+    list: null,
+}, action) => {
     switch(action.type) {
-        case ActionTypes.SAVE_NOTIFICATIONS:
-            return [ ...action.payload ];
-        case ActionTypes.SAVE_OLD_NOTIFICATIONS:
-            return [
+        case actionTypes.SAVE_NOTIFICATIONS:
+            return {
                 ...state,
-                ...action.payload,
-            ];
-        case ActionTypes.RESET_NOTIFICATIONS:
-            return null;
+                list: [...action.payload]
+            }
+        case actionTypes.SAVE_OLD_NOTIFICATIONS:
+            return {
+                ...state,
+                list: [
+                    ...state.list,
+                    ...action.payload
+                ]
+            }
+        case actionTypes.RESET_NOTIFICATIONS:
+            return {
+                hasMore: true,
+                list: null
+            };
+        case actionTypes.TOGGLE_NOTI_HASMORE:
+            return {
+                ...state,
+                hasMore: false
+            };
         default:
             return state;
     }

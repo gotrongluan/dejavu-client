@@ -1,15 +1,18 @@
 import * as actionTypes from './actionTypes';
 
-export const fetchFollowers = () => ({
+export const fetchFollowers = streamerId => ({
     type: actionTypes.FETCH_STREAMER_FOLLOWERS,
+    payload: streamerId,
 });
 
-export const fetchOldFollowers = () => ({
+export const fetchOldFollowers = streamerId => ({
     type: actionTypes.FETCH_STREAMER_OLD_FOLLOWERS,
+    payload: streamerId
 });
 
-export const fetchNumOfFollower = () => ({
+export const fetchNumOfFollower = streamerId => ({
     type: actionTypes.FETCH_STREAMER_NUM_OF_FOLLOWER,
+    payload: streamerId
 });
 
 export const saveFollowers = followers => ({
@@ -35,16 +38,19 @@ export const toggleFollowersHasmore = () => ({
     type: actionTypes.TOGGLE_STREAMER_FOLLOWERS_HASMORE
 });
 
-export const fetchFollowings = () => ({
+export const fetchFollowings = streamerId => ({
     type: actionTypes.FETCH_STREAMER_FOLLOWINGS,
+    payload: streamerId
 });
 
-export const fetchOldFollowings = () => ({
+export const fetchOldFollowings = streamerId => ({
     type: actionTypes.FETCH_STREAMER_OLD_FOLLOWINGS,
+    payload: streamerId
 });
 
-export const fetchNumOfFollowing = () => ({
+export const fetchNumOfFollowing = streamerId => ({
     type: actionTypes.FETCH_STREAMER_NUM_OF_FOLLOWING,
+    payload: streamerId
 });
 
 export const saveFollowings = followers => ({

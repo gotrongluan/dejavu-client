@@ -12,16 +12,17 @@ import styles from './index.module.less';
 class Following extends PureComponent {
 
     componentDidMount() {
-        const { fetchFollowings, fetchNumOfFollowing, location } = this.props;
-        fetchFollowings();
-        fetchNumOfFollowing();
+        const { fetchFollowings, fetchNumOfFollowing, location, match } = this.props;
+        const { streamerId } = match.params;
+        fetchFollowings(streamerId);
+        fetchNumOfFollowing(streamerId);
         this.unsubscribeInfiniteScroll = subscribeInfiniteScroll(location.pathname, () => {
             const {
                 fetchFollowingsLoading,
                 fetchOldFollowingsLoading,
                 fetchOldFollowings
             } = this.props;
-            if (!fetchFollowingsLoading && !fetchOldFollowingsLoading) fetchOldFollowings();
+            if (!fetchFollowingsLoading && !fetchOldFollowingsLoading) fetchOldFollowings(streamerId);
         });
     }
 
@@ -62,7 +63,7 @@ class Following extends PureComponent {
                                 rowKey={rec => rec._id + _.uniqueId("following_")}
                                 renderItem={item => (
                                     <List.Item
-                                        actions={[<Link to={`/streamer/${item._id}/setting`}>Profile</Link>]}
+                                        actions={[<Link to={`/streamer/${item._id}/photos`}>Profile</Link>]}
                                     >
                                         <List.Item.Meta
                                             avatar={<Avatar src={item.avatar} alt="ava" />}
@@ -92,18 +93,18 @@ class Following extends PureComponent {
 }
 
 
-const mapStateToProps = ({ followings, loading }) => ({
-    followings: followings.list,
-    numOfFollowing: followings.numOfFollowing,
-    fetchFollowingsLoading: loading['fetchFollowings'] || false,
-    fetchFollowingsOldLoading: loading['fetchOldFollowings'] || false,
-    fetchNumOfFollowingLoading: loading['fetchNumOfFollowing'] || false,
+const mapStateToProps = ({ streamer, loading }) => ({
+    followings: streamer.followings.list,
+    numOfFollowing: streamer.followings.numOfFollowing,
+    fetchFollowingsLoading: loading['fetchStreamerFollowings'] || false,
+    fetchFollowingsOldLoading: loading['fetchOldStreamerFollowings'] || false,
+    fetchNumOfFollowingLoading: loading['fetchNumOfStreamerFollowing'] || false,
 });
 
 const mapDispathToProps = dispatch => ({
-    fetchFollowings: () => dispatch(streamerActions.fetchFollowings()),
-    fetchOldFollowings: () => dispatch(streamerActions.fetchOldFollowings()),
-    fetchNumOfFollowing: () => dispatch(streamerActions.fetchNumOfFollowing()),
+    fetchFollowings: streamerId => dispatch(streamerActions.fetchFollowings(streamerId)),
+    fetchOldFollowings: streamerId => dispatch(streamerActions.fetchOldFollowings(streamerId)),
+    fetchNumOfFollowing: streamerId => dispatch(streamerActions.fetchNumOfFollowing(streamerId)),
     resetFollowings: () => dispatch(streamerActions.resetFollowings()),
 });
 

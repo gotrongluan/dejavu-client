@@ -27,27 +27,27 @@ class Streamer extends PureComponent {
                                 className={styles.menu}
                             >
                                 <Menu.Item key="setting">
-                                    <Link to={`streamer/${streamerId}/setting`}>
+                                    <Link to={`/streamer/${streamerId}/info`}>
                                         <Icon type="setting" />
-                                        <span className={styles.menuItem}>Setting</span>
+                                        <span className={styles.menuItem}>Info</span>
                                     </Link>
                                 </Menu.Item>
                                 <Menu.Item key="photos">
-                                    <Link to={`streamer/${streamerId}/photos`}>
+                                    <Link to={`/streamer/${streamerId}/photos`}>
                                         <Icon type="picture" />
                                         <span className={styles.menuItem}>Photo</span>
                                     </Link>
                                     
                                 </Menu.Item>
                                 <Menu.Item key="follower">
-                                <Link to={`streamer/${streamerId}/followers`}>
+                                <Link to={`/streamer/${streamerId}/followers`}>
                                     <Icon type="usergroup-add" />
                                     <span className={styles.menuItem}>Follower</span>
                                 </Link>
                                     
                                 </Menu.Item>
                                 <Menu.Item key="following">
-                                    <Link to={`streamer/${streamerId}/following`}>
+                                    <Link to={`/streamer/${streamerId}/following`}>
                                         <Icon type="link" />
                                         <span className={styles.menuItem}>Following</span>
                                     </Link>

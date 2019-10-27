@@ -75,3 +75,32 @@ export const resetFollowings = () => ({
 export const toggleFollowingsHasmore = () => ({
     type: actionTypes.TOGGLE_STREAMER_FOLLOWINGS_HASMORE
 });
+
+export const resetProfile = () => ({
+    type: actionTypes.RESET_PROFILE
+});
+
+export const fetchStreamer = id => ({
+    type: actionTypes.FETCH_STREAMER,
+    payload: id
+});
+
+export const saveProfile = profile => ({
+    type: actionTypes.SAVE_PROFILE,
+    payload: profile
+});
+
+export const follow = streamerId => ({
+    type: actionTypes.FOLLOW,
+    payload: streamerId
+});
+
+export const unfollow = streamerId => ({
+    type: actionTypes.UNFOLLOW,
+    payload: streamerId
+});
+
+export const saveFollow = val => ({
+    type: actionTypes.SAVE_FOLLOW,
+    payload: val
+});

@@ -62,7 +62,7 @@ class Following extends PureComponent {
                                 rowKey={rec => rec._id + _.uniqueId("following_")}
                                 renderItem={item => (
                                     <List.Item
-                                        actions={[<Link to={`/streamer/${item._id}/photos`}>Profile</Link>]}
+                                        actions={[<Link to={`/streamer/${item._id}/info`}>Profile</Link>]}
                                     >
                                         <List.Item.Meta
                                             avatar={<Avatar src={item.avatar} alt="ava" />}

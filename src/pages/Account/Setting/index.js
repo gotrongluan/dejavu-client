@@ -176,9 +176,7 @@ class Setting extends PureComponent {
         )
     }
 }
-
 const mapStateToProps = state => ({
     user: state.global.user,
 });
-
 export default connect(mapStateToProps)(Form.create()(Setting));

@@ -1,4 +1,4 @@
-import { apiGet } from 'utils/request';
+import { apiGet, apiPost, apiDelete } from 'utils/request';
 
 export async function fetchFollowers(params) {
     return apiGet('follows/followers', params);
@@ -14,4 +14,16 @@ export async function fetchNumOfFollower(userId) {
 
 export async function fetchNumOfFollowing(userId) {
     return apiGet(`follows/num-followings?userId=${userId}`);
+}
+
+export async function fetchStreamer(id) {
+    return apiGet(`users/${id}`);
+}
+
+export async function follow(id) {
+    return apiPost('follows/follow', { body: { followedId: id } });
+}
+
+export async function unfollow(id) {
+    return apiDelete(`follows/${id}/unfollow`);
 }

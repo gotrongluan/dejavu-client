@@ -105,6 +105,26 @@ function* fetchNumOfFollowingWatcher() {
     yield takeLatest(actionTypes.FETCH_STREAMER_NUM_OF_FOLLOWING, fetchNumOfFollowing);
 }
 
+function* fetchStreamer({ payload: streamerId }) {
+    yield put(loadingActions.saveLoading('fetchStreamer', true));
+    const response = yield call(streamerServices.fetchStreamer, streamerId);
+    if (response) {
+        const {
+            data: {
+                streamer,
+                followed
+            } 
+        } = response;
+        streamer.followed = followed;
+        yield put(streamerActions.saveProfile(streamer));
+    }
+    yield put(loadingActions.saveLoading('fetchStreamer', false));
+}
+
+function* fetchStreamerWatcher() {
+    yield takeLatest(actionTypes.FETCH_STREAMER, fetchStreamer);
+}
+
 export default function* () {
     yield all([
         fetchFollowersWatcher(),
@@ -112,6 +132,7 @@ export default function* () {
         fetchOldFollowersWatcher(),
         fetchOldFollowingsWatcher(),
         fetchNumOfFollowerWatcher(),
-        fetchNumOfFollowingWatcher()
+        fetchNumOfFollowingWatcher(),
+        fetchStreamerWatcher()
     ])
 }

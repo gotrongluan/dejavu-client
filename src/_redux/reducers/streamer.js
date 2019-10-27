@@ -102,6 +102,24 @@ export default (state = {
                     hasMore: false
                 }
             };
+        case actionTypes.SAVE_PROFILE:
+            return {
+                ...state,
+                profile: { ...action.payload }
+            }
+        case actionTypes.RESET_PROFILE:
+            return {
+                ...state,
+                profile: {}
+            }
+        case actionTypes.SAVE_FOLLOW:
+            return {
+                ...state,
+                profile: {
+                    ...state.profile,
+                    followed: action.payload
+                }
+            };
         default:
             return state;
     }

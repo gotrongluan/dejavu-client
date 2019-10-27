@@ -1,4 +1,6 @@
 import { all, put, call, takeLatest, select } from 'redux-saga/effects';
+import { takeFirst } from 'utils/takeFirst';
+import { message } from 'antd';
 import * as actionTypes from '_redux/actions/actionTypes';
 import * as loadingActions from '_redux/actions/loading';
 import * as streamerActions from '_redux/actions/streamer';
@@ -125,6 +127,34 @@ function* fetchStreamerWatcher() {
     yield takeLatest(actionTypes.FETCH_STREAMER, fetchStreamer);
 }
 
+function* follow({ payload: streamerId }) {
+    yield put(loadingActions.saveLoading('follow', true));
+    const response = yield call(streamerServices.follow, streamerId);
+    if (response) {
+        yield put(streamerActions.saveFollow(true));
+        message.success('Followed successfully!');
+    }
+    yield put(loadingActions.saveLoading('follow', false));
+}
+
+function* followWatcher() {
+    yield takeFirst(actionTypes.FOLLOW, follow);
+}
+
+function* unfollow({ payload: streamerId }) {
+    yield put(loadingActions.saveLoading('unfollow', true));
+    const response = yield call(streamerServices.unfollow, streamerId);
+    if (response) {
+        yield put(streamerActions.saveFollow(false));
+        message.info('Unfollowed :(');
+    }
+    yield put(loadingActions.saveLoading('unfollow', false));
+}
+
+function* unfollowWatcher() {
+    yield takeFirst(actionTypes.UNFOLLOW, unfollow);
+}
+
 export default function* () {
     yield all([
         fetchFollowersWatcher(),
@@ -133,6 +163,8 @@ export default function* () {
         fetchOldFollowingsWatcher(),
         fetchNumOfFollowerWatcher(),
         fetchNumOfFollowingWatcher(),
-        fetchStreamerWatcher()
+        fetchStreamerWatcher(),
+        followWatcher(),
+        unfollowWatcher(),
     ])
 }

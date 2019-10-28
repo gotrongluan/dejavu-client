@@ -10,6 +10,18 @@ const setToken = token => {
         localStorage.removeItem('token');
 }
 
+const getFCMToken = () => {
+    return localStorage.getItem('FCMToken');
+}
+
+const setFCMToken = token => {
+    if (token)
+        return localStorage.setItem('FCMToken', token);
+    const current = getFCMToken();
+    if (current)
+        localStorage.removeItem('FCMToken');
+}
+
 export default {
-    getToken, setToken
+    getToken, setToken, getFCMToken, setFCMToken
 };

@@ -25,7 +25,7 @@ class Following extends PureComponent {
         });
     }
 
-    componentDidWillUnmount() {
+    componentWillUnmount() {
         if (this.unsubscribeInfiniteScroll) this.unsubscribeInfiniteScroll();
         const { resetFollowings } = this.props;
         resetFollowings();

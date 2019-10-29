@@ -10,6 +10,7 @@ import notificationSaga from './sagas/notifications';
 import conversationSaga from './sagas/conversations';
 import messageSaga from './sagas/messages';
 import streamerSaga from './sagas/streamer';
+import watcherSaga from './sagas/watcher';
 
 export function* rootSaga() {
     yield all([
@@ -23,6 +24,7 @@ export function* rootSaga() {
         notificationSaga(),
         conversationSaga(),
         messageSaga(),
-        streamerSaga()
+        streamerSaga(),
+        watcherSaga()
     ]);
 }

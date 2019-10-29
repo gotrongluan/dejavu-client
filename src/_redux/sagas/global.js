@@ -16,6 +16,8 @@ function* login({ from, payload }) {
         storage.setToken(token);
         yield put(globalActions.saveUser(user));
         yield put(globalActions.saveNumOfUnread(unreads.message, unreads.notification));
+        //firebase setup token
+        yield put(globalActions.authorized());
         history.replace(from);
     }
     yield put(loadingActions.saveLoading('login', false));
@@ -36,6 +38,8 @@ function* fetchUser() {
         } = response;
         yield put(globalActions.saveUser(user));
         yield put(globalActions.saveNumOfUnread(unreads.message, unreads.notification));
+        yield put(globalActions.authorized());
+        //fcm token
     }
     yield put(loadingActions.saveLoading('fetchUser', false));
 }

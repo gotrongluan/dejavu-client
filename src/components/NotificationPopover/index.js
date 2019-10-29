@@ -102,7 +102,7 @@ class NotificationPopover extends React.PureComponent {
         const { visible } = this.state;
         let count = 0;
         if (unread > 0)
-            count = <Avatar style={{ background: 'red', fontSize: '11px' }} size={18}>{unread > 9 ? '9+' : unread}</Avatar>;
+            count = <Avatar style={{ background: 'red', fontSize: '11px' }} size={18}>{unread > 99 ? '99+' : unread}</Avatar>;
         const trigger = (
             <span className={styles.trigger}>
                 <Badge

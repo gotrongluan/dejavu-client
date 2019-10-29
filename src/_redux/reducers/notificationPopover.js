@@ -28,6 +28,14 @@ export default (state = {
                 ...state,
                 hasMore: false
             };
+        case actionTypes.SAVE_NEW_NOTIFICATION_POPOVER:
+            return {
+                ...state,
+                list: [
+                    action.payload,
+                    ...state.list
+                ]
+            };
         default:
             return state;
     }

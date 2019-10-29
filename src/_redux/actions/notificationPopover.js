@@ -18,6 +18,11 @@ export const saveOldNotificationPopovers = notificationPopovers => ({
     payload: notificationPopovers,
 });
 
+export const saveNewNotificationPopover = notificationPopover => ({
+    type: actionTypes.SAVE_NEW_NOTIFICATION_POPOVER,
+    payload: notificationPopover,
+});
+
 export const resetNotificationPopovers = () => ({
     type: actionTypes.RESET_NOTIFICATION_POPOVERS
 });
@@ -25,3 +30,4 @@ export const resetNotificationPopovers = () => ({
 export const toggleNotiPopHasmore = () => ({
     type: actionTypes.TOGGLE_NOTI_POP_HASMORE
 });
+

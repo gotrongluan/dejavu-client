@@ -5,8 +5,10 @@ import { rootSaga } from '_redux/combineSaga';
 
 const sagaMiddleware = createSagaMiddleware();
 
+let store;
+
 export const configureStore = () => {
-    const store = createStore(
+    store = createStore(
         reducer,
         applyMiddleware(
             sagaMiddleware,
@@ -14,4 +16,6 @@ export const configureStore = () => {
     );
     sagaMiddleware.run(rootSaga);
     return store;
-}
+};
+
+export { store };

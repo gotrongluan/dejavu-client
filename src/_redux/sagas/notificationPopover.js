@@ -46,6 +46,6 @@ function* fetchOldNotificationPopoversWatcher() {
 export default function* () {
     yield all([
         fetchNotificationPopoversWatcher(),
-        fetchOldNotificationPopoversWatcher(),
+        fetchOldNotificationPopoversWatcher()
     ]);
 }

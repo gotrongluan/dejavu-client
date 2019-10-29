@@ -46,3 +46,7 @@ export const saveNumOfUnreadNoti = val => ({
     type: actionTypes.SAVE_NUM_OF_UNREAD_NOTI,
     payload: val
 });
+
+export const authorized = () => ({
+    type: actionTypes.AUTHORIZED
+});

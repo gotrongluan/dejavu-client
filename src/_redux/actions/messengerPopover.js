@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import PaperPlane from 'elements/Icon/PaperPlane';
 
 export const fetchMessengerPopovers = () => ({
     type: actionTypes.FETCH_MESSENGER_POPOVERS,
@@ -22,7 +23,10 @@ export const resetMessengerPopovers = () => ({
     type: actionTypes.RESET_MESSENGER_POPOVERS
 });
 
-export const saveNewMessengerPopover = () => {}
+export const saveNewMessengerPopover = messPopover => ({
+    type: actionTypes.SAVE_NEW_MESSENGER_POPOVER,
+    payload: messPopover,
+});
 
 export const toggleMessPopHasmore = () => ({
     type: actionTypes.TOGGLE_MESS_POP_HASMORE

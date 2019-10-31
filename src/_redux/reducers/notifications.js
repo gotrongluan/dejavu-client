@@ -5,6 +5,14 @@ export default (state = {
     list: null,
 }, action) => {
     switch(action.type) {
+        case actionTypes.SAVE_NEW_NOTIFICATION:
+            return {
+                ...state,
+                list: [
+                    action.payload,
+                    ...state.list,
+                ]
+            };
         case actionTypes.SAVE_NOTIFICATIONS:
             return {
                 ...state,

@@ -13,10 +13,10 @@ function* fetchConversations() {
     const response = yield call(conversationServices.fetch, { page: 1, limit: 12 });
     if (response) {
         let { data: conversations } = response;
-        conversations = _.keyBy(conversations, conver => conver._id);
-        yield put(conversationActions.saveConversations(conversations));
         if (conversations.length < 12)
             yield put(conversationActions.toggleConversHasmore());
+        conversations = _.keyBy(conversations, conver => conver._id);
+        yield put(conversationActions.saveConversations(conversations));
     }
     yield put(loadingActions.saveLoading('fetchConversations', false));
 }
@@ -29,13 +29,14 @@ function* fetchOldConversations() {
     yield put(loadingActions.saveLoading('fetchOldConversations', true));
     const { list: conversations, hasMore } = yield select(state => state.conversations);
     if (hasMore) {
-        const response = yield call(conversationServices.fetch, { page: (conversations.length / 6) + 1, limit: 6 });
+        const response = yield call(conversationServices.fetch, { page: (Object.keys(conversations).length / 6) + 1, limit: 6 });
         if (response) {
             let { data: oldConversations } = response;
-            oldConversations = _.keyBy(oldConversations, conver => conver._id);
-            yield put(conversationActions.saveOldConversations(oldConversations));
             if (oldConversations.length < 6)
                 yield put(conversationActions.toggleConversHasmore());
+            oldConversations = _.keyBy(oldConversations, conver => conver._id);
+            yield put(conversationActions.saveOldConversations(oldConversations));
+            
         }
     }
     yield put(loadingActions.saveLoading('fetchOldConversations', false));

@@ -105,6 +105,7 @@ function* sendMessage({ payload }) {
         conversationId: payload.converId,
         text: payload.message,
         userId: user._id,
+        seenAt: -1,
         createdAt: Date.now()
     }));
     const response = yield call(messageServices.send, {
@@ -112,6 +113,7 @@ function* sendMessage({ payload }) {
         conversationId: payload.converId,
         partnerId: payload.userId,
     });
+    console.log(response);
     if (response) {
         const {
             data: {
@@ -123,7 +125,10 @@ function* sendMessage({ payload }) {
             //first
             yield put(conversationActions.deleteFirstConversation());
         }
-        yield put(conversationActions.updateOneConversation(conversation));
+        yield put(conversationActions.updateOneConversation({
+            ...conversation,
+            seen: true,
+        }));
         yield put(messageActions.deleteSendingMessage(messId));
         yield put(messageActions.addNewMessage(message));
     }

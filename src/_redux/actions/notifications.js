@@ -30,3 +30,8 @@ export const readNoti = id => ({
 export const toggleNotiHasmore = () => ({
     type: actionTypes.TOGGLE_NOTI_HASMORE
 });
+
+export const saveNewNotification = notification => ({
+    type: actionTypes.SAVE_NEW_NOTIFICATION,
+    payload: notification,
+});

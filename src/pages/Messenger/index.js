@@ -25,16 +25,30 @@ class Messenger extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { conversations } = this.props;
+        const { conversations, firstConversation } = this.props;
         const { conversations: prevConversations } = prevProps;
         if (prevConversations === null && conversations !== null) {
-            if (!_.isEmpty(conversations)> 0) {
-                const firstConver = _.maxBy(_.toArray(conversations), conv => conv.updatedAt);
-                const { fetchCurrentUser, fetchMessages } = this.props;
-                fetchMessages(firstConver._id);
-                fetchCurrentUser(firstConver._id);
+            if (!firstConversation) {
+                if (!_.isEmpty(conversations)) {
+                    const firstConver = _.maxBy(_.toArray(conversations), conv => conv.updatedAt);
+                    const { fetchCurrentUser, fetchMessages } = this.props;
+                    fetchMessages(firstConver._id);
+                    fetchCurrentUser(firstConver._id);
+                    
+                }
             }
         }
+    }
+
+    componentWillUnmount() {
+        const {
+            resetConversations,
+            resetMessages,
+            resetCurrentUser
+        } = this.props;
+        resetConversations();
+        resetMessages();
+        resetCurrentUser();
     }
 
     parseToMessageListsByDate = messages => {
@@ -86,10 +100,14 @@ class Messenger extends PureComponent {
             converOldLoading,
             currentLoading,
             fetchOldMessages,
-            history
+            history,
+            firstConversation
         } = this.props;
 
-        conversations = conversations === null ? conversations : _.orderBy(conversations, ['updatedAt'], ['desc']);
+        if (conversations !== null) {
+            conversations =  _.orderBy(conversations, ['updatedAt'], ['desc']);
+            if (firstConversation) conversations = _.concat([firstConversation], conversations);
+        }
         messages = this.parseToMessageListsByDate(messages);
         const disabledInput = messagesLoading || converLoading || conversations === null || currentUser === null || currentLoading;
 
@@ -126,7 +144,7 @@ class Messenger extends PureComponent {
                                                     <List.Item.Meta
                                                         avatar={<Avatar src={item.avatar} size={36} />}
                                                         title={<span>{truncate(item.name, 46)}</span>}
-                                                        description={item.unseen > 0 ? (<span style={{ color: 'yellowgreen' }}>{`${item.unseen} tin nhắn chưa đọc`}</span>) : (<span>{truncate(item.lastMessage, 46)}</span>)}
+                                                        description={!item.seen ? (<span style={{ color: 'yellowgreen', fontWeight: 'bold' }}>{truncate(item.lastMessage, 46)}</span>) : (<span>{truncate(item.lastMessage, 46)}</span>)}
                                                     />
                                                 </List.Item>
                                             )}
@@ -241,7 +259,8 @@ class Messenger extends PureComponent {
 }
 
 const mapStateToProps = ({ conversations, messages, loading }) => ({
-    conversations: conversations,
+    firstConversation: conversations.first,
+    conversations: conversations.list,
     currentUser: messages.current,
     messages: _.concat(messages.old, messages.new, messages.sending),
     converLoading: loading['fetchConversations'] || false,
@@ -259,7 +278,7 @@ const mapDispatchToProps = dispatch => ({
     fetchCurrentUser: converId => dispatch(MessageActions.fetchCurrentUser(converId)),
     resetConversations: () => dispatch(ConversationActions.resetConversations()),
     resetMessages: () => dispatch(MessageActions.resetMessages()),
-    resetCurrentUser: () => dispatch(MessageActions.resetCurrentUser()),
+    resetCurrentUser: () => dispatch(MessageActions.resetCurrentUser())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Messenger));

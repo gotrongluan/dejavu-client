@@ -7,6 +7,7 @@ import { Form, Row, Col, Input, Button, Avatar, Tooltip, Modal } from 'antd';
 import Spin from 'elements/Spin/Second';
 import StreamerWrapper from 'components/StreamerWrapper';
 import * as streamerActions from '_redux/actions/streamer';
+import * as conversationActions from '_redux/actions/conversations';
 import styles from './index.module.less';
 
 const { TextArea } = Input;
@@ -24,7 +25,7 @@ class Info extends PureComponent {
         resetStreamer();
     }
 
-    handleFollow = () => {
+    handleFollow = () => {  
         const { match, follow } = this.props;
         const { streamerId } = match.params;
         follow(streamerId);
@@ -36,8 +37,13 @@ class Info extends PureComponent {
         unfollow(streamerId);
     }
 
+    handleSendMessage = (id, name, avatar, online) => {
+        const { startConversation } = this.props;
+        startConversation(id, name, avatar, online);
+    }
+
     render() {
-        const { info, loading, followLoading, unfollowLoading } = this.props;
+        const { info, loading, followLoading, unfollowLoading, startConverLoading } = this.props;
         return (
             <StreamerWrapper selectedKey="setting">
                 <Row className={styles.setting}>
@@ -91,7 +97,7 @@ class Info extends PureComponent {
                                                 </Tooltip>
                                             )}
                                             <Tooltip title="Send message" placement="bottom">
-                                                <Button type="default" icon="message" size="large" />
+                                                <Button type="default" icon="message" size="large" onClick={() => this.handleSendMessage(info._id, info.name, info.avatar, info.online)}/>
                                             </Tooltip>
                                         </ButtonGroup>
                                     </div>
@@ -100,7 +106,7 @@ class Info extends PureComponent {
                         </Row>
                     )}
                 </Row>
-                <Modal title={null} maskClosable={false} closable={false} centered footer={null} visible={followLoading || unfollowLoading} width={150}
+                <Modal title={null} maskClosable={false} closable={false} centered footer={null} visible={followLoading || unfollowLoading || startConverLoading} width={150}
                     bodyStyle={{
                         padding: '10px'
                     }}>
@@ -117,13 +123,15 @@ const mapStateToProps = ({ streamer, loading }) => ({
     loading: loading['fetchStreamer'] || false,
     followLoading: loading['follow'] || false,
     unfollowLoading: loading['unfollow'] || false,
+    startConverLoading: loading['startConversation'] || false,
 });
 
 const mapDispatchToProps = dispatch => ({
     fetchStreamer: id => dispatch(streamerActions.fetchStreamer(id)),
     resetStreamer: () => dispatch(streamerActions.resetProfile()),
     follow: id => dispatch(streamerActions.follow(id)),
-    unfollow: id => dispatch(streamerActions.unfollow(id))
+    unfollow: id => dispatch(streamerActions.unfollow(id)),
+    startConversation: (id, name, avatar, online) => dispatch(conversationActions.startConversation(id, name, avatar, online))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Info));

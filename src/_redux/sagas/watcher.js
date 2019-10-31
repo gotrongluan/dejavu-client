@@ -19,7 +19,7 @@ function* onMessage({ payload: notification }) {
         notificationPopup.info({
             message: notificationContent.content,
             description: `${moment(notificationContent.createdAt).format("HH:mm")}`,
-            placement: "bottomRight"
+            placement: "topLeft"
         });
         if (notificationContent.type === NotificationTypes.MESSAGE) {
 
@@ -38,7 +38,7 @@ function* onMessage({ payload: notification }) {
         notificationPopup.info({
             message: notificationTitle,
             description: notificationBody,
-            placement: "bottomRight"
+            placement: "topLeft"
         });
     }
 }

@@ -59,11 +59,14 @@ class MessengerPopover extends React.PureComponent {
                     dataSource={messages}
                     rowKey={item => item._id + _.uniqueId("messenger_popover_")}
                     renderItem={item => (
-                        <List.Item className={styles.item} extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}>
+                        <List.Item
+                            className={styles.item}
+                            style={{ background: (item.seen ? 'inherit' : 'rgba(145, 238, 28, 0.1)')}}
+                            extra={<span style={{ fontSize: '13px', color: 'gray' }}>{ fromNow(item.updatedAt) }</span>}>
                             <List.Item.Meta
                                 avatar={<Avatar src={item.avatar} size={36} />}
                                 title={<span>{truncate(item.name, 46)}</span>}
-                                description={item.unseen > 0 ? (<span style={{ color: 'yellowgreen' }}>{`${item.unseen} tin nhắn chưa đọc`}</span>) : (<span>{truncate(item.lastMessage, 46)}</span>)}
+                                description={<span>{truncate(item.lastMessage, 46)}</span>}
                             />
                         </List.Item>
                     )}
@@ -124,7 +127,7 @@ const mapStateToProps = state => ({
     numOfUnreadMessage: state.global.numOfUnreadMessage,
     loading: state.loading['fetchMessengerPopovers'] || false,
     oldLoading: state.loading['fetchOldMessengerPopovers'] || false,
-    messengerPopover: state.messengerPopover,
+    messengerPopover: state.messengerPopover.list,
 });
 
 const mapDispatchToProps = dispatch => ({

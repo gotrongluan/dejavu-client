@@ -1,24 +1,29 @@
-import * as ActionTypes from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 export const fetchMessengerPopovers = () => ({
-    type: ActionTypes.FETCH_MESSENGER_POPOVERS,
+    type: actionTypes.FETCH_MESSENGER_POPOVERS,
 });
 
 export const fetchOldMessengerPopovers = () => ({
-    type: ActionTypes.FETCH_OLD_MESSENGER_POPOVERS,
+    type: actionTypes.FETCH_OLD_MESSENGER_POPOVERS,
 });
 
 export const saveMessengerPopovers = messengerPopovers => ({
-    type: ActionTypes.SAVE_MESSENGER_POPOVERS,
+    type: actionTypes.SAVE_MESSENGER_POPOVERS,
     payload: messengerPopovers,
 });
 
 export const saveOldMessengerPopovers = messengerPopovers => ({
-    type: ActionTypes.SAVE_OLD_MESSENGER_POPOVERS,
+    type: actionTypes.SAVE_OLD_MESSENGER_POPOVERS,
     payload: messengerPopovers,
 });
 
-
 export const resetMessengerPopovers = () => ({
-    type: ActionTypes.RESET_MESSENGER_POPOVERS
+    type: actionTypes.RESET_MESSENGER_POPOVERS
 });
+
+export const saveNewMessengerPopover = () => {}
+
+export const toggleMessPopHasmore = () => ({
+    type: actionTypes.TOGGLE_MESS_POP_HASMORE
+})

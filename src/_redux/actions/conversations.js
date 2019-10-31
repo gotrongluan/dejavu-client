@@ -1,23 +1,39 @@
-import * as ActionTypes from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 export const fetchConversations = () => ({
-    type: ActionTypes.FETCH_CONVERSATIONS
+    type: actionTypes.FETCH_CONVERSATIONS
 });
 
 export const fetchOldConversations = () => ({
-    type: ActionTypes.FETCH_OLD_CONVERSATIONS
+    type: actionTypes.FETCH_OLD_CONVERSATIONS
 });
 
 export const saveConversations = conversations => ({
-    type: ActionTypes.SAVE_CONVERSATIONS,
+    type: actionTypes.SAVE_CONVERSATIONS,
     payload: conversations,
 });
 
 export const saveOldConversations = conversations => ({
-    type: ActionTypes.SAVE_OLD_CONVERSATIONS,
+    type: actionTypes.SAVE_OLD_CONVERSATIONS,
     payload: conversations,
 });
 
 export const resetConversations = () => ({
-    type: ActionTypes.RESET_CONVERSATIONS
+    type: actionTypes.RESET_CONVERSATIONS
+});
+
+export const saveFirstConversation = conver => ({
+    type: actionTypes.SAVE_FIRST_CONVERSATION,
+    payload: conver
+});
+
+export const startConversation = (id, name, avatar, online) => ({
+    type: actionTypes.START_CONVERSATION,
+    payload: {
+        id, name, avatar, online
+    },
+});
+
+export const toggleConversHasmore = () => ({
+    type: actionTypes.TOGGLE_CONVER_HASMORE
 });

@@ -1,65 +1,46 @@
-import { all, takeEvery, put } from 'redux-saga/effects';
+import { all, takeEvery, put, call, select } from 'redux-saga/effects';
 import { takeFirst } from 'utils/takeFirst';
 import _ from 'lodash';
-import { notification } from 'antd';
-import * as ActionTypes from '_redux/actions/actionTypes';
-import * as MessengerPopoverActions from '_redux/actions/messengerPopover';
-import * as LoadingActions from '_redux/actions/loading';
-import MESSENGER_POPOVERS from 'assets/faker/messengerPopover';
+import * as actionTypes from '_redux/actions/actionTypes';
+import * as messengerPopoverActions from '_redux/actions/messengerPopover';
+import * as loadingActions from '_redux/actions/loading';
+import * as messengerPopoverServices from 'services/messengerPopover';
 
 function* fetchMessengerPopovers() {
-    yield put(LoadingActions.saveLoading('fetchMessengerPopovers', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 2000);
-        });
-        const data = MESSENGER_POPOVERS;
-        yield put(MessengerPopoverActions.saveMessengerPopovers(data));
+    yield put(loadingActions.saveLoading('fetchMessengerPopovers', true));
+    const response = yield call(messengerPopoverServices.fetch, { page: 1, limit: 12 });
+    if (response) {
+        let { data: conversations } = response;
+        conversations = _.keyBy(conversations, conver => conver._id);
+        yield put(messengerPopoverActions.saveMessengerPopovers(conversations));
+        if (conversations.length < 12)
+            yield put(messengerPopoverActions.toggleMessPopHasmore());
     }
-    catch {
-        notification.error({
-            message: 'Fetch messengerPopovers failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchMessengerPopovers', false));
+    yield put(loadingActions.saveLoading('fetchMessengerPopovers', false));
 }
 
 function* fetchMessengerPopoversWatcher() {
-    yield takeEvery(ActionTypes.FETCH_MESSENGER_POPOVERS, fetchMessengerPopovers);
+    yield takeEvery(actionTypes.FETCH_MESSENGER_POPOVERS, fetchMessengerPopovers);
 }
 
 function* fetchOldMessengerPopovers() {
-    yield put(LoadingActions.saveLoading('fetchOldMessengerPopovers', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 700);
-        });
-        let newData = {};
-        newData[_.uniqueId("abc_")] = { ...MESSENGER_POPOVERS['conver_id_1'] };
-        newData[_.uniqueId("abc_")] = { ...MESSENGER_POPOVERS['conver_id_2'] };
-        newData[_.uniqueId("abc_")] = { ...MESSENGER_POPOVERS['conver_id_3'] };
-        newData[_.uniqueId("abc_")] = { ...MESSENGER_POPOVERS['conver_id_4'] };
-        newData[_.uniqueId("abc_")] = { ...MESSENGER_POPOVERS['conver_id_5'] };
-        yield put(MessengerPopoverActions.saveOldMessengerPopovers(newData));
+    yield put(loadingActions.saveLoading('fetchOldMessengerPopovers', true));
+    const { list: conversations, hasMore } = yield select(state => state.conversations);
+    if (hasMore) {
+        const response = yield call(messengerPopoverServices.fetch, { page: (conversations.length / 6) + 1, limit: 6 });
+        if (response) {
+            let { data: oldConversations } = response;
+            oldConversations = _.keyBy(oldConversations, conver => conver._id);
+            yield put(messengerPopoverActions.saveOldMessengerPopovers(oldConversations));
+            if (oldConversations.length < 6)
+                yield put(messengerPopoverActions.toggleMessPopHasmore());
+        }
     }
-    catch {
-        notification.error({
-            message: 'Fetch old messengerPopovers failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchOldMessengerPopovers', false));
+    yield put(loadingActions.saveLoading('fetchOldMessengerPopovers', false));
 }
 
 function* fetchOldMessengerPopoversWatcher() {
-    yield takeFirst(ActionTypes.FETCH_OLD_MESSENGER_POPOVERS, fetchOldMessengerPopovers);
+    yield takeFirst(actionTypes.FETCH_OLD_MESSENGER_POPOVERS, fetchOldMessengerPopovers);
 }
 
 export default function* () {

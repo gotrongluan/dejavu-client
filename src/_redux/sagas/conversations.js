@@ -1,71 +1,87 @@
-import { all, takeEvery, put } from 'redux-saga/effects';
+import { all, call, takeEvery, put, select } from 'redux-saga/effects';
 import { takeFirst } from 'utils/takeFirst';
 import _ from 'lodash';
-import { notification } from 'antd';
-import * as ActionTypes from '_redux/actions/actionTypes';
-import * as ConversationActions from '_redux/actions/conversations';
-import * as LoadingActions from '_redux/actions/loading';
-import CONVERSATIONS from 'assets/faker/conversations';
+import * as actionTypes from '_redux/actions/actionTypes';
+import * as conversationActions from '_redux/actions/conversations';
+import * as messageActions from '_redux/actions/messages';
+import * as loadingActions from '_redux/actions/loading';
+import * as conversationServices from 'services/conversations';
+import { history } from 'utils/history';
 
 function* fetchConversations() {
-    yield put(LoadingActions.saveLoading('fetchConversations', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 2000);
-        });
-        const data = CONVERSATIONS;
-        console.log(111);
-        yield put(ConversationActions.saveConversations(data));
+    yield put(loadingActions.saveLoading('fetchConversations', true));
+    const response = yield call(conversationServices.fetch, { page: 1, limit: 12 });
+    if (response) {
+        let { data: conversations } = response;
+        conversations = _.keyBy(conversations, conver => conver._id);
+        yield put(conversationActions.saveConversations(conversations));
+        if (conversations.length < 12)
+            yield put(conversationActions.toggleConversHasmore());
     }
-    catch {
-        notification.error({
-            message: 'Fetch conversations failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchConversations', false));
+    yield put(loadingActions.saveLoading('fetchConversations', false));
 }
 
 function* fetchConversationsWatcher() {
-    yield takeEvery(ActionTypes.FETCH_CONVERSATIONS, fetchConversations);
+    yield takeEvery(actionTypes.FETCH_CONVERSATIONS, fetchConversations);
 }
 
 function* fetchOldConversations() {
-    yield put(LoadingActions.saveLoading('fetchOldConversations', true));
-    try {
-        yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > -1) return resolve();
-                reject();
-            }, 800);
-        });
-        let newData = {};
-        newData[_.uniqueId("abc_")] = { ...CONVERSATIONS['conver_id_1'] };
-        newData[_.uniqueId("abc_")] = { ...CONVERSATIONS['conver_id_2'] };
-        newData[_.uniqueId("abc_")] = { ...CONVERSATIONS['conver_id_3'] };
-        newData[_.uniqueId("abc_")] = { ...CONVERSATIONS['conver_id_4'] };
-        newData[_.uniqueId("abc_")] = { ...CONVERSATIONS['conver_id_5'] };
-        yield put(ConversationActions.saveOldConversations(newData));
+    yield put(loadingActions.saveLoading('fetchOldConversations', true));
+    const { list: conversations, hasMore } = yield select(state => state.conversations);
+    if (hasMore) {
+        const response = yield call(conversationServices.fetch, { page: (conversations.length / 6) + 1, limit: 6 });
+        if (response) {
+            let { data: oldConversations } = response;
+            oldConversations = _.keyBy(oldConversations, conver => conver._id);
+            yield put(conversationActions.saveOldConversations(oldConversations));
+            if (oldConversations.length < 6)
+                yield put(conversationActions.toggleConversHasmore());
+        }
     }
-    catch {
-        notification.error({
-            message: 'Fetch old conversations failed',
-            description: 'What the fuck are you doing. Please check again!'
-        });
-    }
-    yield put(LoadingActions.saveLoading('fetchOldConversations', false));
+    yield put(loadingActions.saveLoading('fetchOldConversations', false));
 }
 
 function* fetchOldConversationsWatcher() {
-    yield takeFirst(ActionTypes.FETCH_OLD_CONVERSATIONS, fetchOldConversations);
+    yield takeFirst(actionTypes.FETCH_OLD_CONVERSATIONS, fetchOldConversations);
+}
+
+function* startConversation({ payload }) {
+    yield put(loadingActions.saveLoading('startConversation', true));
+    const { id, avatar, name, online } = payload;
+    const response = yield call(conversationServices.checkConversation, id);
+    if (response) {
+        const { data: already } = response;
+        if (already) history.push('/messenger');
+        else {
+            const converId = _.uniqueId('new_conver_')
+            yield put(conversationActions.saveFirstConversation({
+                _id: converId,
+                name: name,
+                avatar: avatar,
+                color: 'default',
+                updatedAt: Date.now(),
+                lastMessage: '',
+                seen: false,
+            }));
+            yield put(messageActions.saveCurrentUser({
+                _id: id,
+                converId,
+                name, avatar, online
+            }));
+            history.push('/messenger');
+        }
+    }
+    yield put(loadingActions.saveLoading('startConversation', false));
+}
+
+function* startConversationWatcher() {
+    yield takeEvery(actionTypes.START_CONVERSATION, startConversation);
 }
 
 export default function* () {
     yield all([
         fetchConversationsWatcher(),
         fetchOldConversationsWatcher(),
+        startConversationWatcher()
     ]);
 }

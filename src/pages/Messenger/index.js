@@ -4,6 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import io from 'socket.io-client';
 import { Row, Col, Avatar, List, Collapse, Input, Button, Icon, Badge } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import MessageView from './MessageView';
@@ -19,6 +20,14 @@ const { Panel } = Collapse;
 
 
 class Messenger extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            curConverId: null,
+        };
+        this.connectSocketIO();
+    }
+
     componentDidMount() {
         const { fetchConversations } = this.props;
         fetchConversations();
@@ -34,7 +43,10 @@ class Messenger extends PureComponent {
                     const { fetchCurrentUser, fetchMessages } = this.props;
                     fetchMessages(firstConver._id);
                     fetchCurrentUser(firstConver._id);
-                    
+                    this.socket.emit('joinConversation', firstConver._id);
+                    this.setState({
+                        curConverId: firstConver._id
+                    });
                 }
             }
         }
@@ -49,6 +61,17 @@ class Messenger extends PureComponent {
         resetConversations();
         resetMessages();
         resetCurrentUser();
+        this.socket.disconnect();
+    }
+
+    connectSocketIO = () => {
+        this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/chat`);
+        this.socket.on('connect', () => {
+            console.log('Socket connection!');
+        });
+        this.socket.on('disconnect', () => {
+            console.log('Disconnect socket!');
+        });
     }
 
     parseToMessageListsByDate = messages => {
@@ -86,6 +109,14 @@ class Messenger extends PureComponent {
         if (currentUser.converId !== converId) {
             fetchMessages(converId);
             fetchCurrentUser(converId);
+            const { curConverId } = this.state;
+            if (curConverId) {
+                this.socket.emit('leaveConversation', curConverId);
+            }
+            this.socket.emit('joinConversation', converId);
+            this.setState({
+                curConverId: converId
+            });
         }
     }
 

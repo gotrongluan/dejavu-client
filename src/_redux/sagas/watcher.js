@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { all, take, fork, put, cancel, call, takeEvery, select } from 'redux-saga/effects';
 import NotificationTypes from 'constants/notificationType';
-import { notification as notificationPopup, Avatar } from 'antd';
+import { notification as notificationPopup, Icon } from 'antd';
 import * as actionTypes from '_redux/actions/actionTypes';
 import * as watcherActions from '_redux/actions/watcher';
 import * as globalActions from '_redux/actions/global';
@@ -16,10 +16,11 @@ function* onMessage({ payload: notification }) {
     if (notification.data) {
         //data message
         const notificationContent = JSON.parse(notification.data.payload);
-        notificationPopup.info({
+        notificationPopup.open({
             message: notificationContent.content,
             description: `${moment(notificationContent.createdAt).format("HH:mm")}`,
-            placement: "topLeft"
+            placement: "topLeft",
+            icon: <Icon type="bell" />
         });
         if (notificationContent.type === NotificationTypes.MESSAGE) {
 
@@ -35,10 +36,11 @@ function* onMessage({ payload: notification }) {
     else {
         const notificationTitle = notification.notification.title;
         const notificationBody = notification.notification.body;
-        notificationPopup.info({
+        notificationPopup.open({
             message: notificationTitle,
             description: notificationBody,
-            placement: "topLeft"
+            placement: "topLeft",
+            icon: <Icon type="bell" />
         });
     }
 }

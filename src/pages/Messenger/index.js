@@ -24,6 +24,7 @@ class Messenger extends PureComponent {
         super(props);
         this.state = {
             curConverId: null,
+            message: '',
         };
         this.connectSocketIO();
     }
@@ -116,6 +117,28 @@ class Messenger extends PureComponent {
             this.socket.emit('joinConversation', converId);
             this.setState({
                 curConverId: converId
+            });
+        }
+    }
+
+    handleTypeMessage = e => {
+        const val = e.target.value;
+        this.setState({
+            message: val
+        });
+    }
+
+    handleSendMessage = () => {
+        const { message, curConverId } = this.state;
+        if (message && _.trim(message) !== '') {
+            const {
+                sendMessage,
+                currentUser,
+            } = this.props;
+            const userId = currentUser._id;
+            sendMessage(curConverId, userId, _.trim(message));
+            this.setState({
+                message: ''
             });
         }
     }
@@ -218,8 +241,8 @@ class Messenger extends PureComponent {
                                     />
                                 )}
                                 <div className={styles.typeMessage}>
-                                    <Input placeholder="Enter message..." disabled={disabledInput}/>
-                                    <PaperPlane />
+                                    <Input placeholder="Enter message..." disabled={disabledInput} value={this.state.message} onChange={this.handleTypeMessage} onPressEnter={this.handleSendMessage}/>
+                                    <PaperPlane onClick={this.handleSendMessage} />
                                 </div>
                             </Col>
                             <Col className={styles.info} span={8}>
@@ -307,6 +330,7 @@ const mapDispatchToProps = dispatch => ({
     fetchMessages: converId => dispatch(MessageActions.fetchMessages(converId)),
     fetchOldMessages: converId => dispatch(MessageActions.fetchOldMessages(converId)),
     fetchCurrentUser: converId => dispatch(MessageActions.fetchCurrentUser(converId)),
+    sendMessage: (converId, userId, message) => dispatch(MessageActions.sendMessage(converId, userId, message)),
     resetConversations: () => dispatch(ConversationActions.resetConversations()),
     resetMessages: () => dispatch(MessageActions.resetMessages()),
     resetCurrentUser: () => dispatch(MessageActions.resetCurrentUser())

@@ -11,6 +11,23 @@ export default (state = {
                 ...state,
                 first: { ...action.payload }
             };
+        case actionTypes.DELETE_FIRST_CONVERSATION:
+            return {
+                ...state,
+                first: null
+            };
+        case actionTypes.UPDATE_ONE_CONVERSATION:
+            const conversation = state.list[action.payload._id] ? state.list[action.payload._id] : {};
+            return {
+                ...state,
+                list: {
+                    ...state.list,
+                    [action.payload._id]: {
+                        ...conversation,
+                        ...action.payload
+                    }
+                }
+            };
         case actionTypes.SAVE_CONVERSATIONS:
             return {
                 ...state,

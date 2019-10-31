@@ -37,3 +37,12 @@ export const startConversation = (id, name, avatar, online) => ({
 export const toggleConversHasmore = () => ({
     type: actionTypes.TOGGLE_CONVER_HASMORE
 });
+
+export const deleteFirstConversation = () => ({
+    type: actionTypes.DELETE_FIRST_CONVERSATION,
+});
+
+export const updateOneConversation = conver => ({
+    type: actionTypes.UPDATE_ONE_CONVERSATION,
+    payload: conver
+});

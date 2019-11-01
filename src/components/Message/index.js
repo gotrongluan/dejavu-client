@@ -1,16 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import { Row, Col, Icon } from 'antd';
 import Check from 'elements/Icon/Check';
 import CheckAll from 'elements/Icon/CheckAll';
 import styles from './index.module.less';
 
-const userId = '5cff74fe01b2fcce8819970b';
-
-const Message = ({ message }) => {
+const Message = ({ userId, message }) => {
     let seen = null;
     if (message.userId === userId)
-        seen = message.seenAt > 0 ? (<CheckAll />) : (message.seenAt < 0 ? (<Icon type="clock-circle" style={{ color: 'yellowgreen' }} />) : (<Check />));
+        seen = message.seenAt === -1 ? (<Icon type="clock-circle" style={{ color: 'yellowgreen' }} />) : (!message.seenAt ? (<Check />) : (<CheckAll />));
     return (
         <Row className={styles.message}>
             <Col className={styles.content} span={22}>
@@ -18,10 +17,14 @@ const Message = ({ message }) => {
             </Col>
             <Col className={styles.timeAndStatus} span={2}>
                 {seen}
-                <span className={styles.time}>{moment(message.createdAt).format("H:mm")}</span>
+                <span className={styles.time}>{moment(message.createdAt).format("HH:mm")}</span>
             </Col>
         </Row>
     );
 }
 
-export default Message
+const mapStateToProps = state => ({
+    userId: state.global.user._id,
+});
+
+export default connect(mapStateToProps)(Message);

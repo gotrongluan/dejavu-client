@@ -46,3 +46,20 @@ export const updateOneConversation = conver => ({
     type: actionTypes.UPDATE_ONE_CONVERSATION,
     payload: conver
 });
+
+export const updateSeenStatus = (converId, status) => ({
+    type: actionTypes.UPDATE_SEEN_STATUS,
+    payload: {
+        status,
+        converId,
+    }
+});
+
+export const updateLastMessageAndUpdatedAt = (converId, lastMessage, updatedAt) => ({
+    type: actionTypes.UPDATE_LAST_MESS_AND_UPDATED_AT,
+    payload: {
+        converId,
+        lastMessage,
+        updatedAt,
+    }
+});

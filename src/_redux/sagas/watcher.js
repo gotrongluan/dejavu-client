@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import moment, { duration } from 'moment';
 import _ from 'lodash';
 import { all, take, fork, put, cancel, call, takeEvery, select } from 'redux-saga/effects';
 import NotificationTypes from 'constants/notificationType';
@@ -26,7 +26,8 @@ function* onMessage({ payload: notification }) {
                 message: `${notificationContent.name} sent to you: "${notificationContent.lastMessage}"`,
                 description: `${moment(notificationContent.updatedAt).format("HH:mm")}`,
                 placement: "topLeft",
-                icon: <Icon type="message" style={{ color: 'yellowgreen' }}/>
+                icon: <Icon type="message" style={{ color: 'yellowgreen' }}/>,
+                duration: 0
             });
             const { converId, lastMessage, updatedAt, name, avatar } = notificationContent;
             const { list: messengerPopovers } = yield select(state => state.messengerPopover);
@@ -39,9 +40,7 @@ function* onMessage({ payload: notification }) {
                 color: 'default',
                 lastMessage: lastMessage,
             };
-            console.log(messengerPopovers);
             if (!_.isEmpty(messengerPopovers)) {
-                console.log(conver);
                 yield put(messengerPopoverActions.saveNewMessengerPopover(conver));
             }
             const { list: conversations } = yield select(state => state.conversations);

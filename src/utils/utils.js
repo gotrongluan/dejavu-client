@@ -32,3 +32,11 @@ export const toQueryString= json => {
 };
 
 export const delay = ms => new Promise((res, rej) => setTimeout(res, ms));
+
+export const findLimit = (data, minimum, number = false) => {
+    const length = !number ? data.length : data;
+    let i = minimum;
+    while (length % i > 0 && i < length)
+        i++;
+    return i;
+}

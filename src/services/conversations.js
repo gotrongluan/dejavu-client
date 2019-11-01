@@ -7,3 +7,7 @@ export async function fetch(params) {
 export async function checkConversation(id) {
     return apiGet(`conversations/check?partnerId=${id}`);
 }
+
+export async function fetchUser(converId) {
+    return apiGet(`conversations/${converId}/partner`);
+}

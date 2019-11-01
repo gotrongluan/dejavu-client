@@ -1,5 +1,6 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects';
 import { takeFirst } from 'utils/takeFirst';
+import { findLimit } from 'utils/utils';
 import _ from 'lodash';
 import * as actionTypes from '_redux/actions/actionTypes';
 import * as messengerPopoverActions from '_redux/actions/messengerPopover';
@@ -25,9 +26,11 @@ function* fetchMessengerPopoversWatcher() {
 
 function* fetchOldMessengerPopovers() {
     yield put(loadingActions.saveLoading('fetchOldMessengerPopovers', true));
-    const { list: conversations, hasMore } = yield select(state => state.conversations);
+    const { list: conversations, hasMore } = yield select(state => state.messengerPopover);
     if (hasMore) {
-        const response = yield call(messengerPopoverServices.fetch, { page: (conversations.length / 6) + 1, limit: 6 });
+        const numConvers = Object.keys(conversations).length;
+        const limit = findLimit(numConvers, 6, true);
+        const response = yield call(messengerPopoverServices.fetch, { page: (numConvers / limit) + 1, limit });
         if (response) {
             let { data: oldConversations } = response;
             oldConversations = _.keyBy(oldConversations, conver => conver._id);

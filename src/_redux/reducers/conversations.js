@@ -1,4 +1,5 @@
 import * as actionTypes from '_redux/actions/actionTypes';
+import { stat } from 'fs';
 
 export default (state = {
     hasMore: true,
@@ -28,6 +29,17 @@ export default (state = {
                     }
                 }
             };
+        case actionTypes.UPDATE_SEEN_STATUS:
+            return {
+                ...state,
+                list: {
+                    ...state.list,
+                    [action.payload.converId]: {
+                        ...state.list[action.payload.converId],
+                        seen: action.payload.status
+                    }
+                }
+            }
         case actionTypes.SAVE_CONVERSATIONS:
             return {
                 ...state,
@@ -51,6 +63,18 @@ export default (state = {
             return {
                 ...state,
                 hasMore: false,
+            };
+        case actionTypes.UPDATE_LAST_MESS_AND_UPDATED_AT:
+            return {
+                ...state,
+                list: {
+                    ...state.list,
+                    [action.payload.converId]: {
+                        ...state.list[action.payload.converId],
+                        updatedAt: action.payload.updatedAt,
+                        lastMessage: action.payload.lastMessage,
+                    }
+                }
             };
         default:
             return state;

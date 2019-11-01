@@ -11,8 +11,8 @@ import MessageView from './MessageView';
 import Spin from 'elements/Spin/Second';
 import PageHeaderWrapper from 'components/PageHeaderWrapper/withoutScroll';
 import PaperPlane from 'elements/Icon/PaperPlane';
-import * as ConversationActions from '_redux/actions/conversations';
-import * as MessageActions from '_redux/actions/messages';
+import * as conversationActions from '_redux/actions/conversations';
+import * as messageActions from '_redux/actions/messages';
 import { fromNow, truncate } from 'utils/utils';
 import styles from './index.module.less';
 
@@ -25,6 +25,7 @@ class Messenger extends PureComponent {
         this.state = {
             curConverId: null,
             message: '',
+            firstUser: null,
         };
         this.connectSocketIO();
     }
@@ -35,7 +36,7 @@ class Messenger extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { conversations, firstConversation } = this.props;
+        const { conversations, firstConversation, currentUser, userId } = this.props;
         const { conversations: prevConversations } = prevProps;
         if (prevConversations === null && conversations !== null) {
             if (!firstConversation) {
@@ -44,11 +45,18 @@ class Messenger extends PureComponent {
                     const { fetchCurrentUser, fetchMessages } = this.props;
                     fetchMessages(firstConver._id);
                     fetchCurrentUser(firstConver._id);
-                    this.socket.emit('joinConversation', firstConver._id);
+                    this.socket.emit('joinConversation', firstConver._id, userId);
                     this.setState({
                         curConverId: firstConver._id
                     });
                 }
+            }
+            else {
+                this.setState({
+                    firstUser: {
+                        ...currentUser
+                    }
+                });
             }
         }
     }
@@ -66,6 +74,7 @@ class Messenger extends PureComponent {
     }
 
     connectSocketIO = () => {
+        const { addNewMessage, updateLastMessAndUpdatedAt, updateSeenMessages } = this.props;
         this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/chat`);
         this.socket.on('connect', () => {
             console.log('Socket connection!');
@@ -73,6 +82,13 @@ class Messenger extends PureComponent {
         this.socket.on('disconnect', () => {
             console.log('Disconnect socket!');
         });
+        this.socket.on('message', ({ message, conversation }) => {
+            addNewMessage(message);
+            updateLastMessAndUpdatedAt(conversation._id, message.content, conversation.updatedAt);
+        });
+        this.socket.on('seen', (messageIds) => {
+            updateSeenMessages(messageIds);
+        })
     }
 
     parseToMessageListsByDate = messages => {
@@ -106,18 +122,30 @@ class Messenger extends PureComponent {
     }
 
     handleClickConver = converId => {
-        const { fetchMessages, fetchCurrentUser, currentUser } = this.props;
+        const { fetchMessages, fetchCurrentUser, currentUser, saveCurrentUser, resetMessages, userId } = this.props;
+        const { curConverId } = this.state;
         if (currentUser.converId !== converId) {
-            fetchMessages(converId);
-            fetchCurrentUser(converId);
-            const { curConverId } = this.state;
-            if (curConverId) {
-                this.socket.emit('leaveConversation', curConverId);
+            if (_.startsWith(converId, 'new_conver_')) {
+                this.setState({
+                    curConverId: null
+                });
+                saveCurrentUser(this.state.firstUser);
+                resetMessages();
+                if (curConverId) {
+                    this.socket.emit('leaveConversation', curConverId, userId);
+                }
             }
-            this.socket.emit('joinConversation', converId);
-            this.setState({
-                curConverId: converId
-            });
+            else {
+                fetchMessages(converId);
+                fetchCurrentUser(converId);
+                if (curConverId) {
+                    this.socket.emit('leaveConversation', curConverId, userId);
+                }
+                this.socket.emit('joinConversation', converId, userId);
+                this.setState({
+                    curConverId: converId
+                });
+            }
         }
     }
 
@@ -136,7 +164,10 @@ class Messenger extends PureComponent {
                 currentUser,
             } = this.props;
             const userId = currentUser._id;
-            sendMessage(curConverId, userId, _.trim(message));
+            const callback = converId => {
+                this.socket.emit('joinConversation', converId, userId);
+            }
+            sendMessage(curConverId, userId, _.trim(message), callback);
             this.setState({
                 message: ''
             });
@@ -312,7 +343,7 @@ class Messenger extends PureComponent {
     }
 }
 
-const mapStateToProps = ({ conversations, messages, loading }) => ({
+const mapStateToProps = ({ global: globalState, conversations, messages, loading }) => ({
     firstConversation: conversations.first,
     conversations: conversations.list,
     currentUser: messages.current,
@@ -322,18 +353,23 @@ const mapStateToProps = ({ conversations, messages, loading }) => ({
     currentLoading: loading['fetchCurrentUser'] || false,
     messagesLoading: loading['fetchMessages'] || false,
     messagesOldLoading: loading['fetchOldMessages'] || false,
+    userId: globalState.user._id,
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchConversations: () => dispatch(ConversationActions.fetchConversations()),
-    fetchOldConversations: () => dispatch(ConversationActions.fetchOldConversations()),
-    fetchMessages: converId => dispatch(MessageActions.fetchMessages(converId)),
-    fetchOldMessages: converId => dispatch(MessageActions.fetchOldMessages(converId)),
-    fetchCurrentUser: converId => dispatch(MessageActions.fetchCurrentUser(converId)),
-    sendMessage: (converId, userId, message) => dispatch(MessageActions.sendMessage(converId, userId, message)),
-    resetConversations: () => dispatch(ConversationActions.resetConversations()),
-    resetMessages: () => dispatch(MessageActions.resetMessages()),
-    resetCurrentUser: () => dispatch(MessageActions.resetCurrentUser())
+    fetchConversations: () => dispatch(conversationActions.fetchConversations()),
+    fetchOldConversations: () => dispatch(conversationActions.fetchOldConversations()),
+    fetchMessages: converId => dispatch(messageActions.fetchMessages(converId)),
+    fetchOldMessages: converId => dispatch(messageActions.fetchOldMessages(converId)),
+    fetchCurrentUser: converId => dispatch(messageActions.fetchCurrentUser(converId)),
+    saveCurrentUser: currentUser => dispatch(messageActions.saveCurrentUser(currentUser)),
+    sendMessage: (converId, userId, message, cb) => dispatch(messageActions.sendMessage(converId, userId, message, cb)),
+    resetConversations: () => dispatch(conversationActions.resetConversations()),
+    resetMessages: () => dispatch(messageActions.resetMessages()),
+    resetCurrentUser: () => dispatch(messageActions.resetCurrentUser()),
+    addNewMessage: message => dispatch(messageActions.addNewMessage(message)),
+    updateSeenMessages: messageIds => dispatch(messageActions.updateSeenMessages(messageIds)),
+    updateLastMessAndUpdatedAt: (converId, lastMessage, updatedAt) => dispatch(conversationActions.updateLastMessageAndUpdatedAt(converId, lastMessage, updatedAt))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Messenger));

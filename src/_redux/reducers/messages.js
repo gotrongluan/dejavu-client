@@ -33,6 +33,8 @@ export default (state = {
             return {
                 ...state,
                 old: [ ...action.payload ],
+                new: [],
+                sending: []
             };
         case actionTypes.SAVE_OLD_MESSAGES:
             return {
@@ -41,6 +43,14 @@ export default (state = {
                     ...action.payload,
                     ...state.old
                 ]
+            };
+        case actionTypes.UPDATE_CONVER_ID:
+            return {
+                ...state,
+                current: {
+                    ...state.current,
+                    converId: action.payload
+                }
             };
         case actionTypes.RESET_MESSAGES:
             return {
@@ -58,6 +68,31 @@ export default (state = {
             return {
                 ...state,
                 current: null
+            };
+        case actionTypes.UPDATE_SEEN_MESSAGES:
+            const oldMessages = state.old;
+            const newMessages = state.new;
+            console.log(newMessages);
+            const messageIds = action.payload;
+            const updateOldMessages = _.map(oldMessages, mess => {
+                const newMess = { ...mess };
+                if (_.indexOf(messageIds, newMess._id) > -1) {
+                    newMess.seenAt = Date.now();
+                }
+                return newMess;
+            });
+            const updateNewMessages = _.map(newMessages, mess => {
+                const newMess = { ...mess };
+                if (_.indexOf(messageIds, newMess._id) > -1) {
+                    newMess.seenAt = Date.now();
+                }
+                return newMess;
+            });
+            console.log(updateNewMessages);
+            return {
+                ...state,
+                old: updateOldMessages,
+                new: updateNewMessages
             };
         default:
             return state;

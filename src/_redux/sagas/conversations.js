@@ -1,5 +1,6 @@
 import { all, call, takeEvery, put, select } from 'redux-saga/effects';
 import { takeFirst } from 'utils/takeFirst';
+import { findLimit } from 'utils/utils';
 import _ from 'lodash';
 import * as actionTypes from '_redux/actions/actionTypes';
 import * as conversationActions from '_redux/actions/conversations';
@@ -29,10 +30,12 @@ function* fetchOldConversations() {
     yield put(loadingActions.saveLoading('fetchOldConversations', true));
     const { list: conversations, hasMore } = yield select(state => state.conversations);
     if (hasMore) {
-        const response = yield call(conversationServices.fetch, { page: (Object.keys(conversations).length / 6) + 1, limit: 6 });
+        const numConvers = Object.keys(conversations).length;
+        const limit = findLimit(numConvers, 6, true);
+        const response = yield call(conversationServices.fetch, { page: (numConvers / limit) + 1, limit: limit });
         if (response) {
             let { data: oldConversations } = response;
-            if (oldConversations.length < 6)
+            if (oldConversations.length < limit)
                 yield put(conversationActions.toggleConversHasmore());
             oldConversations = _.keyBy(oldConversations, conver => conver._id);
             yield put(conversationActions.saveOldConversations(oldConversations));

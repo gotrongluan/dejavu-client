@@ -38,10 +38,10 @@ export const resetCurrentUser = () => ({
     type: actionTypes.RESET_CURRENT_USER
 });
 
-export const sendMessage = (converId, userId, message) => ({
+export const sendMessage = (converId, userId, message, cb) => ({
     type: actionTypes.SEND_MESSAGE,
     payload: {
-        converId, userId, message
+        converId, userId, message, cb
     }
 });
 
@@ -58,4 +58,14 @@ export const deleteSendingMessage = messId => ({
 export const addNewMessage = message => ({
     type: actionTypes.ADD_NEW_MESSAGE,
     payload: message
+});
+
+export const updateConverId = converId => ({
+    type: actionTypes.UPDATE_CONVER_ID,
+    payload: converId
+});
+
+export const updateSeenMessages = messageIds => ({
+    type: actionTypes.UPDATE_SEEN_MESSAGES,
+    payload: messageIds,
 });

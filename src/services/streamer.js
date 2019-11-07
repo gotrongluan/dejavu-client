@@ -17,7 +17,7 @@ export async function fetchNumOfFollowing(userId) {
 }
 
 export async function fetchStreamer(id) {
-    return apiGet(`users/${id}`);
+    return apiGet(`streamers/${id}`);
 }
 
 export async function follow(id) {

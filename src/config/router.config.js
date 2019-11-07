@@ -105,7 +105,7 @@ export default [
     },
     {
         key: 'view',
-        path: '/view:streamerId',
+        path: '/view/:streamerId',
         hideInMenu: true,
         component: 'LiveStream/View'
     },

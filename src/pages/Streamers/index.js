@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Layout, Menu, Icon, Row, Col } from 'antd';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
-import STREAMERS from 'assets/faker/streamers';
+import Spin from 'elements/Spin/Second';
+//import STREAMERS from 'assets/faker/streamers';
 import Streamer from './Streamer';
 import * as streamersActions from '_redux/actions/streamers';
 import { subscribeInfiniteScroll } from 'utils/infiniteScroll';
@@ -37,7 +38,8 @@ class Streamers extends React.PureComponent {
         this.setState({
             type: key
         });
-        const { fetchStreamers } = this.props;
+        const { fetchStreamers, saveHasmore } = this.props;
+        saveHasmore(true);
         fetchStreamers(key);
     }
 
@@ -45,7 +47,7 @@ class Streamers extends React.PureComponent {
         //const { streamers } = this.props;
         const { type } = this.state;
         let { streamers, loading, oldLoading } = this.props;
-        streamers = _.chunk(streamers, 4);
+        streamers = streamers ? _.chunk(streamers, 4) : null;
         return (
             <PageHeaderWrapper>
                 <Layout className={styles.streamersList}>
@@ -82,15 +84,28 @@ class Streamers extends React.PureComponent {
                     </Sider>
                     <Layout className={styles.streamers}>
                         <Content>
-                            {streamers.map((streamersRow, i) => (
-                                <Row key={i} className={styles.streamersRow} gutter={24}>
-                                    {streamersRow.map((streamer, j) => (
-                                        <Col key={`${i}_${j}`} span={6} className={styles.streamerItem}>
-                                            <Streamer streamer={streamer} />
-                                        </Col>
-                                    ))}
+                            {!streamers || loading ? (
+                                <Row className={styles.loadingCont}>
+                                    <Spin fontSize={10} />
                                 </Row>
-                            ))}
+                            ) : (
+                                <React.Fragment>
+                                    {streamers.map((streamersRow, i) => (
+                                        <Row key={i} className={styles.streamersRow} gutter={24}>
+                                            {streamersRow.map((streamer, j) => (
+                                                <Col key={`${i}_${j}`} span={6} className={styles.streamerItem}>
+                                                    <Streamer streamer={streamer} />
+                                                </Col>
+                                            ))}
+                                        </Row>
+                                    ))}
+                                    {oldLoading && (
+                                        <div className={styles.oldLoading}>
+                                            <Spin fontSize={4} />
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            )}
                         </Content>
                     </Layout>
                 </Layout>
@@ -108,7 +123,8 @@ const mapStateToProps = ({ loading, streamers }) => ({
 const mapDispatchToProps = dispatch => ({
     fetchStreamers: type => dispatch(streamersActions.fetchStreamers(type)),
     fetchOldStreamers: type => dispatch(streamersActions.fetchOldStreamers(type)),
-    resetStreamers: () => dispatch(streamersActions.resetStreamers())
+    resetStreamers: () => dispatch(streamersActions.resetStreamers()),
+    saveHasmore: val => dispatch(streamersActions.saveStreamersHasmore(val))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Streamers);

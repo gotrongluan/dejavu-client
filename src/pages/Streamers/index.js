@@ -1,17 +1,50 @@
 import React from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import { Layout, Menu, Icon, Row, Col } from 'antd';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import STREAMERS from 'assets/faker/streamers';
 import Streamer from './Streamer';
+import * as streamersActions from '_redux/actions/streamers';
+import { subscribeInfiniteScroll } from 'utils/infiniteScroll';
 import styles from './index.module.less';
 
 const { Sider, Content } = Layout;
 
 class Streamers extends React.PureComponent {
+    state = {
+        type: 'topPun'
+    }
+
+    componentDidMount() {
+        const { type } = this.state;
+        const { fetchStreamers } = this.props;
+        fetchStreamers(type);
+        this.unsubscribeInfiniteScroll = subscribeInfiniteScroll('/streamers', () => {
+            const { type } = this.state;
+            const { oldLoading, loading, fetchOldStreamers } = this.props;
+            if (!loading && !oldLoading) fetchOldStreamers(type);
+        });
+    }
+
+    componentWillUnmount() {
+        if (this.unsubscribeInfiniteScroll) this.unsubscribeInfiniteScroll();
+        const { resetStreamers } = this.props;
+        resetStreamers();
+    }
+
+    handleSelectType = ({ key }) => {
+        this.setState({
+            type: key
+        });
+        const { fetchStreamers } = this.props;
+        fetchStreamers(key);
+    }
+
     render() {
         //const { streamers } = this.props;
-        let streamers = STREAMERS;
+        const { type } = this.state;
+        let { streamers, loading, oldLoading } = this.props;
         streamers = _.chunk(streamers, 4);
         return (
             <PageHeaderWrapper>
@@ -24,10 +57,11 @@ class Streamers extends React.PureComponent {
                         <div className={styles.menuCont}>
                             <Menu
                                 theme="light"
-                                defaultSelectedKeys={['top']}
+                                selectedKeys={[type]}
                                 className={styles.menu}
+                                onClick={this.handleSelectType}
                             >
-                                <Menu.Item key="top">
+                                <Menu.Item key="topPun">
                                     <Icon type="heart" />
                                     <span className={styles.menuItem}>Top Pun</span>
                                 </Menu.Item>
@@ -35,7 +69,7 @@ class Streamers extends React.PureComponent {
                                     <Icon type="play-square" />
                                     <span className={styles.menuItem}>Popular</span>
                                 </Menu.Item>
-                                <Menu.Item key="view">
+                                <Menu.Item key="mostView">
                                     <Icon type="eye" />
                                     <span className={styles.menuItem}>Most View</span>
                                 </Menu.Item>
@@ -65,4 +99,16 @@ class Streamers extends React.PureComponent {
     }
 }
 
-export default Streamers;
+const mapStateToProps = ({ loading, streamers }) => ({
+    streamers: streamers.list,
+    loading: loading['fetchStreamers'] || false,
+    oldLoading: loading['fetchOldStreamers'] || false,
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchStreamers: type => dispatch(streamersActions.fetchStreamers(type)),
+    fetchOldStreamers: type => dispatch(streamersActions.fetchOldStreamers(type)),
+    resetStreamers: () => dispatch(streamersActions.resetStreamers())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Streamers);

@@ -27,7 +27,6 @@ function* onMessage({ payload: notification }) {
                 description: `${moment(notificationContent.updatedAt).format("HH:mm")}`,
                 placement: "topLeft",
                 icon: <Icon type="message" style={{ color: 'yellowgreen' }}/>,
-                duration: 0
             });
             const { converId, lastMessage, updatedAt, name, avatar } = notificationContent;
             const { list: messengerPopovers } = yield select(state => state.messengerPopover);

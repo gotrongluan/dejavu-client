@@ -149,3 +149,5 @@ export const FETCH_STREAMER_VT = 'FETCH_STREAMER_VT';
 export const SAVE_GIFTS = 'SAVE_GIFTS';
 export const FETCH_GIFTS = 'FETCH_GIFTS';
 export const RESET_VIEW_STREAM = 'RESET_VIEW_STREAM';
+export const VIEW_STREAM = 'VIEW_STREAM';
+export const SAVE_HLS_URL = 'SAVE_HLS_URL';

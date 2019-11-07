@@ -6,9 +6,13 @@ class ViewStreamStatus {
     static get ERROR() {
         return 1;
     }
-    
+
     static get OFFLINE() {
         return 2;
+    }
+
+    static get SUCCESS() {
+        return 3;
     }
 }
 

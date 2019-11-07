@@ -10,6 +10,7 @@ import notificationSaga from './sagas/notifications';
 import conversationSaga from './sagas/conversations';
 import messageSaga from './sagas/messages';
 import streamerSaga from './sagas/streamer';
+import viewStreamSaga from './sagas/viewStream';
 import streamersSaga from './sagas/streamers';
 import watcherSaga from './sagas/watcher';
 
@@ -25,6 +26,7 @@ export function* rootSaga() {
         notificationSaga(),
         conversationSaga(),
         messageSaga(),
+        viewStreamSaga(),
         streamerSaga(),
         streamersSaga(),
         watcherSaga()

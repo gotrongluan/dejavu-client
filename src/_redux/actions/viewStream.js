@@ -22,3 +22,13 @@ export const saveGifts = gifts => ({
 export const resetViewStream = () => ({
     type: actionTypes.RESET_VIEW_STREAM
 });
+
+export const viewStream = streamId => ({
+    type: actionTypes.VIEW_STREAM,
+    payload: streamId,
+});
+
+export const saveHlsUrl = url => ({
+    type: actionTypes.SAVE_HLS_URL,
+    payload: url
+});

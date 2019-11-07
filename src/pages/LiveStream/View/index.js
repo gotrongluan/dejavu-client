@@ -1,16 +1,17 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Hls from 'hls.js';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { Row, Col, Icon, Button, Avatar, Input, List, Modal, Tooltip } from 'antd';
+import io from 'socket.io-client';
+import { Row, Col, Icon, Avatar, Input, Modal, Tooltip } from 'antd';
+import CommentView from './CommentView';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import Heart from 'elements/Icon/Heart';
 import PaperPlane from 'elements/Icon/PaperPlane';
 import Spin from 'elements/Spin/Second';
 import ViewStreamStatus from 'constants/viewStreamStatus';
-import COMMENTS from 'assets/faker/comments';
+import * as viewStreamActions from '_redux/actions/viewStream';
 import styles from './index.module.less';
 
 class ViewStream extends React.PureComponent {
@@ -19,25 +20,90 @@ class ViewStream extends React.PureComponent {
         this.video = React.createRef();
         this.state = {
             comment: '',
+            comments: [],
             status: ViewStreamStatus.LOADING
         };
+        this.connectSocketIO();
     }
 
     componentDidMount() {
+        const { match, fetchStreamer } = this.props;
+        const streamerId = match.params.streamerId;
+        fetchStreamer(streamerId);
         // setTimeout(() => {
         //     console.log(this.video.current);
-        //     if (Hls.isSupported()) {
-        //         const hls = new Hls({ enableWorker: false });
-        //         hls.attachMedia(this.video.current);
-        //         hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-        //             hls.loadSource('https://wowzaprod218-i.akamaihd.net/hls/live/1002628/f5e80846/playlist.m3u8');
-        //             hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        //                 this.video.current.play();
-        //             })
-        //         })
-        //     }
+        //     
         // }, 1000);
 
+    }
+
+    componentDidUpdate(prevProps) {
+        const { streamer, viewStream, hlsUrl } = this.props;
+        const { streamer: prevStreamer, hlsUrl: prevHlsUrl } = prevProps;
+        if (!prevStreamer && streamer) {
+            if (streamer.online && streamer.streamId) {
+                //get wowza info
+                //call api view stream of wowza,
+                viewStream(streamer.streamId);
+            }
+            else {
+                this.setState({
+                    status: ViewStreamStatus.OFFLINE
+                });
+            }
+        }
+        if (hlsUrl && !prevHlsUrl) {
+            if (this.socket) {
+                this.socket.emit('joinRoom', streamer._id);
+            }
+            this.setState({
+                status: ViewStreamStatus.SUCCESS
+            });
+            if (Hls.isSupported()) {
+                this.hls = new Hls({ enableWorker: false });
+                this.hls.attachMedia(this.video.current);
+                this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                    this.hls.loadSource(hlsUrl);
+                    this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        this.video.current.play();
+                    });
+                });
+            }
+            
+        }
+    }
+
+    componentWillUnmount() {
+        const { resetViewStream, match } = this.props;
+        resetViewStream();
+        if (this.hls) this.hls.destroy();
+        if (this.socket) {
+            this.socket.emit('leaveRoom', match.params.streamerId);
+            this.socket.disconnect();
+            this.socket = null;
+        }
+    }
+
+    connectSocketIO = () => {
+        const { match } = this.props;
+        const { streamerId } = match.params;
+        this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/stream`);
+        this.socket.on('connect', () => {
+            console.log('Socket connection!');
+        });
+        this.socket.on('disconnect', () => {
+            console.log('Disconnect socket!');
+        });
+        this.socket.on('message', message => {
+            this.setState({
+                comments: [...this.state.comments, message]
+            });
+        });
+        this.socket.on('close', () => {
+            this.setState({
+                status: ViewStreamStatus.OFFLINE
+            });
+        });
     }
 
     handleEnterComment = e => {
@@ -94,45 +160,70 @@ class ViewStream extends React.PureComponent {
         }
         return (
             <div className={styles.input}>
-                <Input placeholder="Enter comment..." value={this.state.comment} onChange={this.handleEnterComment} />
-                <PaperPlane />
+                <Input placeholder="Enter comment..." value={this.state.comment} onChange={this.handleEnterComment} onPressEnter={this.handleSendComment}/>
+                <PaperPlane onClick={this.handleSendComment} />
             </div>
         );
     }
 
+    handleSendComment = () => {
+        const { comment } = this.state;
+        const { user, match } = this.props;
+        const { streamerId } = match.params;
+        if (comment && _.trim(comment) !== '') {
+            this.socket.emit('message', streamerId, {
+                comment: _.trim(comment),
+                name: user && user.name,
+                avatar: user && user.avatar
+            });
+            this.setState({
+                comment: ''
+            });
+        }
+    }
     render() {
-        const { status } = this.state;
+        const { status, comments } = this.state;
         const statusComp = this.getStatusComponent(); 
         const inputComp = this.getInputComponent();
+        const { streamer, gifts, streamerLoading, giftsLoading } = this.props;
+
         return (
             <PageHeaderWrapper>
                 <Row className={styles.viewStream}>
                     <Col span={17} className={styles.content}>
                         <Row className={styles.title}>
-                            <Col span={1} className={styles.avatar}>
-                                <Avatar src="https://api.adorable.io/avatars/285/punf.png" alt="avatar" size={48} />
-                            </Col>
-                            <Col span={17} className={styles.nameAndPun}>
-                                <div className={styles.name}>
-                                    <Link to="/streamer">Park Chorong</Link>
+                            {!streamer || streamerLoading ? (
+                                <div className={styles.loadingTitle}>
+                                    <Spin fontSize={5} isCenter={false} />
                                 </div>
-                                <div className={styles.pun}>
-                                    <Heart /><span style={{ marginLeft: 5 }}>{1244}</span>
-                                </div>
-                            </Col>
-                            <Col span={6} className={styles.actions}>
-                                <Tooltip title="Follow"><Icon type="user-add" className={styles.icon} /></Tooltip>
-                                <Tooltip title="Send message"><Icon type="message" className={styles.icon} /></Tooltip>
-                                <Tooltip title="Send gift"><Icon type="gift" className={styles.icon} /></Tooltip>
-                            </Col>
+                            ) : (
+                                <React.Fragment>
+                                    <Col span={1} className={styles.avatar}>
+                                        <Avatar src={streamer.avatar} alt="avatar" size={48} />
+                                    </Col>
+                                    <Col span={17} className={styles.nameAndPun}>
+                                        <div className={styles.name}>
+                                            <Link to={`/streamer/${streamer._id}/info`}>{streamer.name}</Link>
+                                        </div>
+                                        <div className={styles.pun}>
+                                            <Heart /><span style={{ marginLeft: 5 }}>{streamer.pun}</span>
+                                        </div>
+                                    </Col>
+                                    <Col span={6} className={styles.actions}>
+                                        <Tooltip title={streamer.followed ? "Unfollow" : "Follow"}><Icon type={streamer.followed ? "user-delete" : "user-add"} className={styles.icon} /></Tooltip>
+                                        <Tooltip title="Send message"><Icon type="message" className={styles.icon} /></Tooltip>
+                                        <Tooltip title="Send gift"><Icon type="gift" className={styles.icon} /></Tooltip>
+                                    </Col>
+                                </React.Fragment>
+                            )}
                         </Row>
                         <div className={styles.video}>
                             <div className={styles.numView}>
-                                <Icon type="eye" /><span style={{ marginLeft: 5 }}>{1244}</span>
+                                <Icon type="eye" /><span style={{ marginLeft: 5 }}>{!streamer ? 0 : streamer.view}</span>
                             </div>
                             <div className={styles.videoInner}>
                                 <div className={styles.iframe}>
-                                    <div className={styles.center}>
+                                    <div className={styles.center} style={{ padding: (!statusComp ? 0 : 20) }}>
                                         {statusComp}
                                     </div>
                                     <div className={styles.iframeInner}>
@@ -153,23 +244,7 @@ class ViewStream extends React.PureComponent {
                                     <Spin fontSize={8} />
                                 </div>
                             ) : (
-                                <Scrollbars style={{ width: '100%', height: '100%' }} className={styles.messages}>
-                                    <List
-                                        bordered={false}
-                                        split={false}
-                                        rowKey={r => _.uniqueId('comment_')}
-                                        dataSource={COMMENTS}
-                                        renderItem={item => (
-                                            <List.Item className={styles.message}>
-                                                <List.Item.Meta
-                                                    avatar={<Avatar src={item.avatar} size={37} />}
-                                                    title={<span className={styles.name}>{item.name}</span>}
-                                                    description={<span className={styles.comment}>{item.comment}</span>}
-                                                />
-                                            </List.Item>
-                                        )}
-                                    />
-                                </Scrollbars>
+                                <CommentView comments={comments} />
                             )}
                         </div>
                         {inputComp}
@@ -183,4 +258,20 @@ class ViewStream extends React.PureComponent {
     }
 }
 
-export default ViewStream;
+const mapStateToProps = ({ global: globalState, viewStream, loading }) => ({
+    user: globalState.user,
+    streamer: viewStream.streamer,
+    gifts: viewStream.gifts,
+    hlsUrl: viewStream.hlsUrl,
+    streamerLoading: loading['fetchStreamerVT'] || false,
+    giftsLoading: loading['fetchGifts'] || false
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchStreamer: id => dispatch(viewStreamActions.fetchStreamerVT(id)),
+    fetchGifts: () => dispatch(viewStreamActions.fetchGifts()),
+    resetViewStream: () => dispatch(viewStreamActions.resetViewStream()),
+    viewStream: streamId => dispatch(viewStreamActions.viewStream(streamId))
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ViewStream));

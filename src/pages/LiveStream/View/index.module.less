@@ -96,9 +96,15 @@
         }
         .messagesCont {
             height: calc(100% - 82px - 82px - 52px);
-            .messages {
+            .messages, .loadingCmts {
                 margin-top: 10px;
                 border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+            .loadingCmts {
+                height: 100%;
+                position: relative;
+            }
+            .messages {
                 .name {
                     font-weight: bold;
                 }
@@ -133,6 +139,12 @@
                 bottom: 0;
                 right: 0;
             }
+        }
+        .inputText {
+            height: 52px;
+            text-align: center;
+            line-height: 52px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
     }
 }

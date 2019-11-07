@@ -8,6 +8,7 @@ import { Row, Col, Icon, Button, Avatar, Input, List, Modal, Tooltip } from 'ant
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import Heart from 'elements/Icon/Heart';
 import PaperPlane from 'elements/Icon/PaperPlane';
+import Spin from 'elements/Spin/Second';
 import ViewStreamStatus from 'constants/viewStreamStatus';
 import COMMENTS from 'assets/faker/comments';
 import styles from './index.module.less';
@@ -18,24 +19,25 @@ class ViewStream extends React.PureComponent {
         this.video = React.createRef();
         this.state = {
             comment: '',
-            status: ViewStreamStatus.ERROR
+            status: ViewStreamStatus.LOADING
         };
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            console.log(this.video.current);
-            if (Hls.isSupported()) {
-                const hls = new Hls({ enableWorker: false });
-                hls.attachMedia(this.video.current);
-                hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                    hls.loadSource('https://wowzaprod218-i.akamaihd.net/hls/live/1002628/f5e80846/playlist.m3u8');
-                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        this.video.current.play();
-                    })
-                })
-            }
-        }, 1000);
+        // setTimeout(() => {
+        //     console.log(this.video.current);
+        //     if (Hls.isSupported()) {
+        //         const hls = new Hls({ enableWorker: false });
+        //         hls.attachMedia(this.video.current);
+        //         hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+        //             hls.loadSource('https://wowzaprod218-i.akamaihd.net/hls/live/1002628/f5e80846/playlist.m3u8');
+        //             hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        //                 this.video.current.play();
+        //             })
+        //         })
+        //     }
+        // }, 1000);
+
     }
 
     handleEnterComment = e => {
@@ -73,8 +75,35 @@ class ViewStream extends React.PureComponent {
         }
         return null;
     }
+
+    getInputComponent = () => {
+        const { status } = this.state;
+        if (status === ViewStreamStatus.LOADING) {
+            return (
+                <div className={styles.inputText}>
+                    Connecting...
+                </div>
+            );
+        }
+        else if (status === ViewStreamStatus.OFFLINE) {
+            return (
+                <div className={styles.inputText}>
+                    The livestream has ended.
+                </div>
+            );
+        }
+        return (
+            <div className={styles.input}>
+                <Input placeholder="Enter comment..." value={this.state.comment} onChange={this.handleEnterComment} />
+                <PaperPlane />
+            </div>
+        );
+    }
+
     render() {
+        const { status } = this.state;
         const statusComp = this.getStatusComponent(); 
+        const inputComp = this.getInputComponent();
         return (
             <PageHeaderWrapper>
                 <Row className={styles.viewStream}>
@@ -119,28 +148,31 @@ class ViewStream extends React.PureComponent {
                             Comments
                         </div>
                         <div className={styles.messagesCont}>
-                            <Scrollbars style={{ width: '100%', height: '100%' }} className={styles.messages}>
-                                <List
-                                    bordered={false}
-                                    split={false}
-                                    rowKey={r => _.uniqueId('comment_')}
-                                    dataSource={COMMENTS}
-                                    renderItem={item => (
-                                        <List.Item className={styles.message}>
-                                            <List.Item.Meta
-                                                avatar={<Avatar src={item.avatar} size={37} />}
-                                                title={<span className={styles.name}>{item.name}</span>}
-                                                description={<span className={styles.comment}>{item.comment}</span>}
-                                            />
-                                        </List.Item>
-                                    )}
-                                />
-                            </Scrollbars>
+                            {status === ViewStreamStatus.LOADING ? (
+                                <div className={styles.loadingCmts}>
+                                    <Spin fontSize={8} />
+                                </div>
+                            ) : (
+                                <Scrollbars style={{ width: '100%', height: '100%' }} className={styles.messages}>
+                                    <List
+                                        bordered={false}
+                                        split={false}
+                                        rowKey={r => _.uniqueId('comment_')}
+                                        dataSource={COMMENTS}
+                                        renderItem={item => (
+                                            <List.Item className={styles.message}>
+                                                <List.Item.Meta
+                                                    avatar={<Avatar src={item.avatar} size={37} />}
+                                                    title={<span className={styles.name}>{item.name}</span>}
+                                                    description={<span className={styles.comment}>{item.comment}</span>}
+                                                />
+                                            </List.Item>
+                                        )}
+                                    />
+                                </Scrollbars>
+                            )}
                         </div>
-                        <div className={styles.input}>
-                            <Input placeholder="Enter comment..." value={this.state.comment} onChange={this.handleEnterComment} />
-                            <PaperPlane />
-                        </div>
+                        {inputComp}
                     </Col>
                 </Row>
                 <Modal>

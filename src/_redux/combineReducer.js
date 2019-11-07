@@ -12,6 +12,7 @@ import streamerReducer from './reducers/streamer';
 import streamersReducer from './reducers/streamers';
 import transactionsReducer from './reducers/transactions';
 import globalReducer from './reducers/global';
+import viewStreamReducer from './reducers/viewStream';
 import loadingReducer from './reducers/loading';
 import errorReducer from './reducers/error';
 
@@ -28,6 +29,7 @@ const reducer = combineReducers({
     streamer: streamerReducer,
     streamers: streamersReducer,
     transactions: transactionsReducer,
+    viewStream: viewStreamReducer,
     global: globalReducer,
     error: errorReducer,
     loading: loadingReducer,

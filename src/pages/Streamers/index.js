@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Layout, Menu, Icon, Row, Col } from 'antd';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import Spin from 'elements/Spin/Second';
@@ -94,7 +95,7 @@ class Streamers extends React.PureComponent {
                                         <Row key={i} className={styles.streamersRow} gutter={24}>
                                             {streamersRow.map((streamer, j) => (
                                                 <Col key={`${i}_${j}`} span={6} className={styles.streamerItem}>
-                                                    <Streamer streamer={streamer} />
+                                                    <Link to={`/view/${streamer._id}`}><Streamer streamer={streamer} /></Link>
                                                 </Col>
                                             ))}
                                         </Row>

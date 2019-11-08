@@ -1,90 +1,90 @@
 export default [
     {
-        id: 1,
+        _id: 1,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 2,
+        _id: 2,
         name: 'Diamond',
         avatar: 'http://localhost:4000/images/diamond.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 3,
+        _id: 3,
         name: 'Diamond',
         avatar: 'http://localhost:4000/images/diamond.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 4,
+        _id: 4,
         name: 'Diamond',
         avatar: 'http://localhost:4000/images/diamond.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 5,
+        _id: 5,
         name: 'Diamond',
         avatar: 'http://localhost:4000/images/diamond.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 6,
+        _id: 6,
         name: 'Diamond',
         avatar: 'http://localhost:4000/images/diamond.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 7,
+        _id: 7,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 11,
+        _id: 11,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 12,
+        _id: 12,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 13,
+        _id: 13,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 14,
+        _id: 14,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 15,
+        _id: 15,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,
         pun: 12
     },
     {
-        id: 16,
+        _id: 16,
         name: 'Balloon',
         avatar: 'http://localhost:4000/images/balloon.svg',
         coin: 5,

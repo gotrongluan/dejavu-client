@@ -25,7 +25,7 @@ class ViewStream extends React.PureComponent {
             comments: [],
             status: ViewStreamStatus.LOADING,
             visibleGiftsModal: false,
-            curGift: null
+            curGiftId: null
         };
         this.connectSocketIO();
     }
@@ -176,7 +176,7 @@ class ViewStream extends React.PureComponent {
 
     handleCancel = () => {
         this.setState({
-            curGift: null,
+            curGiftId: null,
             visibleGiftsModal: false
         });
     }
@@ -196,13 +196,31 @@ class ViewStream extends React.PureComponent {
             });
         }
     }
+
+    handleSelectGift = giftId => {
+        this.setState({
+            curGiftId: giftId
+        });
+    }
+
     render() {
-        const { status, comments, curGift } = this.state;
+        const { status, comments, curGiftId } = this.state;
         const statusComp = this.getStatusComponent(); 
         const inputComp = this.getInputComponent();
         const { user: { coin }, streamer, streamerLoading, giftsLoading } = this.props;
         let gifts = GIFTS;
-        const current = curGift ? _.find(gifts, g => g._id === curGift) : <Icon type="gift" theme="filled" className={styles.giftIcon} />;
+        let curGift = null;
+        if (!curGiftId)
+            curGift = <Icon type="gift" theme="filled" className={styles.giftIcon} />;
+        else {
+            const curGiftObj = _.find(gifts, g => g._id === curGiftId);
+            curGift = (
+                <div className={styles.curGift}>
+                    <div className={styles.avatar}><img src={curGiftObj.avatar} alt="ava" /></div>
+                    <div className={styles.name}>{curGiftObj.name}</div>
+                </div>
+            )
+        }
         return (
             <PageHeaderWrapper>
                 <Row className={styles.viewStream}>
@@ -288,7 +306,7 @@ class ViewStream extends React.PureComponent {
                         ) : (
                             <Row className={styles.giftsCont}>
                                 <Row className={styles.giftBig}>
-                                    <div className={styles.innerDiv}>{current}</div>
+                                    <div className={styles.innerDiv}>{curGift}</div>
                                 </Row>
                                 <Row className={styles.gifts}>
                                     <List
@@ -299,20 +317,22 @@ class ViewStream extends React.PureComponent {
                                             pageSize: 8,
                                             size: "small"
                                         }}
-                                        rowKey={r => r._id}
+                                        rowKey={r => _.uniqueId("gift_") + r._id}
                                         grid={{
                                             gutter: 8, column: 4
                                         }}
                                         dataSource={gifts}
                                         renderItem={item => (
-                                            <List.Item className={styles.giftItem}>
-                                                <div className={styles.avatar}><img src={item.avatar} alt="ava" /></div>
-                                                <div className={styles.name}>{item.name}</div>
-                                                <Row className={styles.punAndCoin} gutter={8}>
-                                                    <Col span={12} style={{ textAlign: 'right' }}><Coin size={16} /><span className={styles.amount}>{item.coin}</span></Col>
-                                                    <Col span={12} style={{ textAlign: 'left' }}><Heart size={16}/><span className={styles.amount}>{item.pun}</span></Col>
-                                                </Row>
-                                            </List.Item>
+                                            <div onClick={() => this.handleSelectGift(item._id)}>
+                                                <List.Item className={styles.giftItem}>
+                                                    <div className={styles.avatar}><img src={item.avatar} alt="ava" /></div>
+                                                    <div className={styles.name}>{item.name}</div>
+                                                    <Row className={styles.punAndCoin} gutter={8}>
+                                                        <Col span={12} style={{ textAlign: 'right' }}><Coin size={16} /><span className={styles.amount}>{item.coin}</span></Col>
+                                                        <Col span={12} style={{ textAlign: 'left' }}><Heart size={16}/><span className={styles.amount}>{item.pun}</span></Col>
+                                                    </Row>
+                                                </List.Item>
+                                            </div>
                                         )}
                                     />
                                 </Row>

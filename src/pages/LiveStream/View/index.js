@@ -203,11 +203,21 @@ class ViewStream extends React.PureComponent {
         });
     }
 
+    handleSendGift = () => {
+        const { curGiftId, sendGift, streamer } = this.state;
+        if (!curGiftId) return message.error('You must select gift!');
+        const streamerId = streamer._id;
+        sendGift(curGiftId, streamerId);
+        this.setState({
+            visibleGiftsModal: false
+        });
+    }
+
     render() {
         const { status, comments, curGiftId } = this.state;
         const statusComp = this.getStatusComponent(); 
         const inputComp = this.getInputComponent();
-        const { user: { coin }, streamer, streamerLoading, giftsLoading } = this.props;
+        const { user: { coin }, streamer, streamerLoading, giftsLoading, sendLoading } = this.props;
         let gifts = GIFTS;
         let curGift = null;
         if (!curGiftId)
@@ -343,6 +353,13 @@ class ViewStream extends React.PureComponent {
                         </div>
                     </div>
                 </Modal>
+                <Modal title={null} maskClosable={false} closable={false} centered footer={null} visible={sendLoading} width={150}
+                    bodyStyle={{
+                        padding: '10px'
+                    }}>
+                    <div style={{ height: '60px', position: 'relative' }}><Spin fontSize={5} /></div>
+                    <div style={{ color: '#91CC1E', textAlign: 'center' }}>Sending gift...</div>
+                </Modal>
             </PageHeaderWrapper>
         )
     }
@@ -354,13 +371,15 @@ const mapStateToProps = ({ global: globalState, viewStream, loading }) => ({
     gifts: viewStream.gifts,
     //hlsUrl: viewStream.hlsUrl,
     streamerLoading: loading['fetchStreamerVT'] || false,
-    giftsLoading: loading['fetchGifts'] || false
+    giftsLoading: loading['fetchGifts'] || false,
+    sendLoading: loading['sendGift'] || false
 });
 
 const mapDispatchToProps = dispatch => ({
     fetchStreamer: id => dispatch(viewStreamActions.fetchStreamerVT(id)),
     fetchGifts: () => dispatch(viewStreamActions.fetchGifts()),
     resetViewStream: () => dispatch(viewStreamActions.resetViewStream()),
+    sendGift: (giftId, streamerId) => dispatch(viewStreamActions.sendGift(giftId, streamerId))
     //viewStream: streamId => dispatch(viewStreamActions.viewStream(streamId))
 });
 

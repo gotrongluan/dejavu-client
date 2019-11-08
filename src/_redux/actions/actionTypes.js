@@ -151,3 +151,5 @@ export const FETCH_GIFTS = 'FETCH_GIFTS';
 export const RESET_VIEW_STREAM = 'RESET_VIEW_STREAM';
 export const VIEW_STREAM = 'VIEW_STREAM';
 export const SAVE_HLS_URL = 'SAVE_HLS_URL';
+export const SEND_GIFT = 'SEND_GIFT';
+export const UPDATE_STREAMER_PUN = 'UPDATE_STREAMER_PUN';

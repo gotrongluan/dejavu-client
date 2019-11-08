@@ -21,11 +21,35 @@ function* fetchStreamerVTWatcher() {
 }
 
 function* fetchGifts() {
-
+    yield put(loadingActions.saveLoading('fetchGifts', true));
+    const response = yield call(viewStreamServices.fetchGifts);
+    if (response) {
+        const { data: gifts } = response;
+        yield put(viewStreamActions.saveGifts(gifts));
+    }
+    yield put(loadingActions.saveLoading('fetchGifts', false));
 }
 
 function* fetchGiftsWatcher() {
     yield takeEvery(actionTypes.FETCH_GIFTS, fetchGifts);
+}
+
+function* sendGift({ payload }) {
+    const { giftId, streamerId } = payload;
+    yield put(loadingActions.saveLoading('sendGift', true));
+    const response = yield call(viewStreamServices.sendGift, { giftId, streamerId });
+    if (response) {
+        const { data } = response;
+        if (data.status) {
+            const pun = data.pun;
+            yield put(viewStreamActions.updateStreamerPun(pun));
+        }
+    }
+    yield put(loadingActions.saveLoading('sendGift', false));
+}
+
+function* sendGiftWatcher() {
+    yield takeEvery(actionTypes.SEND_GIFT, sendGift);
 }
 
 // function* viewStream({ payload: streamId }) {
@@ -44,6 +68,7 @@ export default function* () {
     yield all([
         fetchStreamerVTWatcher(),
         fetchGiftsWatcher(),
+        sendGiftWatcher()
         //viewStreamWatcher()
     ]);
 }

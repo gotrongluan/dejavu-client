@@ -21,6 +21,14 @@ export default (state = {
                 ...state,
                 gifts: [...action.payload]
             };
+        case actionTypes.UPDATE_STREAMER_PUN:
+            return {
+                ...state,
+                streamer: {
+                    ...state.streamer,
+                    pun: action.payload
+                }
+            };
         // case actionTypes.SAVE_HLS_URL:
         //     return {
         //         ...state,

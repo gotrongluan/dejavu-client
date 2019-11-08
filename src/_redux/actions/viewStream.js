@@ -32,3 +32,15 @@ export const resetViewStream = () => ({
 //     type: actionTypes.SAVE_HLS_URL,
 //     payload: url
 // });
+
+export const sendGift = (giftId, streamerId) => ({
+    type: actionTypes.SEND_GIFT,
+    payload: {
+        giftId, streamerId
+    }
+});
+
+export const updateStreamerPun = pun => ({
+    type: actionTypes.UPDATE_STREAMER_PUN,
+    payload: pun
+});

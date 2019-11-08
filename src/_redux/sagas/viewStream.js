@@ -28,22 +28,22 @@ function* fetchGiftsWatcher() {
     yield takeEvery(actionTypes.FETCH_GIFTS, fetchGifts);
 }
 
-function* viewStream({ payload: streamId }) {
-    const response = yield call(viewStreamServices.viewStream, streamId);
-    if (response) {
-        const { live_stream: { player_hls_playback_url: hlsUrl } } = response;
-        yield put(viewStreamActions.saveHlsUrl(hlsUrl));
-    }
-}
+// function* viewStream({ payload: streamId }) {
+//     const response = yield call(viewStreamServices.viewStream, streamId);
+//     if (response) {
+//         const { live_stream: { player_hls_playback_url: hlsUrl } } = response;
+//         yield put(viewStreamActions.saveHlsUrl(hlsUrl));
+//     }
+// }
 
-function* viewStreamWatcher() {
-    yield takeEvery(actionTypes.VIEW_STREAM, viewStream);
-}
+// function* viewStreamWatcher() {
+//     yield takeEvery(actionTypes.VIEW_STREAM, viewStream);
+// }
 
 export default function* () {
     yield all([
         fetchStreamerVTWatcher(),
         fetchGiftsWatcher(),
-        viewStreamWatcher()
+        //viewStreamWatcher()
     ]);
 }

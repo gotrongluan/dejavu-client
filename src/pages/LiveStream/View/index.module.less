@@ -95,13 +95,11 @@
         }
         .messagesCont {
             height: calc(100% - 82px - 82px - 52px);
-            .messages, .loadingCmts {
-                margin-top: 10px;
-                border: 1px solid rgba(0, 0, 0, 0.1);
-            }
             .loadingCmts {
                 height: 100%;
                 position: relative;
+                margin-top: 10px;
+                border: 1px solid rgba(0, 0, 0, 0.1);
             }
         }
         .input {
@@ -132,6 +130,70 @@
             text-align: center;
             line-height: 52px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+.giftsModal {
+    :global(.ant-modal-title) {
+        color: @primary-color;
+    }
+    .modal {
+        .loadingGifts {
+            height: 392px;
+            position: relative;
+        }
+        .coin {
+            padding-left: 23px;
+            position: relative;
+            bottom: 37px;
+            float: left;
+        }
+        .giftsCont {
+            .giftBig {
+                height: 220px;
+                position: relative;
+                .innerDiv {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%;-50%);
+                    text-align: center;
+                    .giftIcon {
+                        font-size: 140px;
+                        color: rgba(145, 238, 28, 0.2);
+                    }
+                }
+            }
+            .gifts {
+                margin-top: 25px;
+                .giftItem {
+                    cursor: pointer;
+                    text-align: center;
+                    padding: 6px 0;
+                    border-radius: 4px;
+                    &:hover {
+                        background-color: rgba(145, 238, 28, 0.1);
+                    }
+                    .avatar {
+                        padding: 5px 0;
+                        img {
+                            width: 40px;
+                            height: 40px;
+                        }
+                    }
+                    .name {
+                        font-weight: bold;
+                        font-size: 1.1em;
+                    }
+                    .punAndCoin {
+                        .amount {
+                            margin-left: 1px;
+                            font-size: 0.85em;
+                        }
+                    }
+                }
+            }
         }
     }
 }

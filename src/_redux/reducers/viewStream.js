@@ -3,7 +3,7 @@ import * as actionTypes from '_redux/actions/actionTypes';
 export default (state = {
     streamer: null,
     gifts: null,
-    hlsUrl: null,
+    //hlsUrl: null,
 }, action) => {
     switch(action.type) {
         case actionTypes.RESET_VIEW_STREAM:
@@ -21,11 +21,11 @@ export default (state = {
                 ...state,
                 gifts: [...action.payload]
             };
-        case actionTypes.SAVE_HLS_URL:
-            return {
-                ...state,
-                hlsUrl: action.payload
-            };
+        // case actionTypes.SAVE_HLS_URL:
+        //     return {
+        //         ...state,
+        //         hlsUrl: action.payload
+        //     };
         default:
             return state;
     }

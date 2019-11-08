@@ -4,14 +4,16 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Hls from 'hls.js';
 import io from 'socket.io-client';
-import { Row, Col, Icon, Avatar, Input, Modal, Tooltip } from 'antd';
+import { Row, Col, Icon, Avatar, Input, Modal, Tooltip, message, List } from 'antd';
 import CommentView from './CommentView';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import Heart from 'elements/Icon/Heart';
+import Coin from 'elements/Icon/Coin';
 import PaperPlane from 'elements/Icon/PaperPlane';
 import Spin from 'elements/Spin/Second';
 import ViewStreamStatus from 'constants/viewStreamStatus';
 import * as viewStreamActions from '_redux/actions/viewStream';
+import GIFTS from 'assets/faker/gifts';
 import styles from './index.module.less';
 
 class ViewStream extends React.PureComponent {
@@ -21,7 +23,9 @@ class ViewStream extends React.PureComponent {
         this.state = {
             comment: '',
             comments: [],
-            status: ViewStreamStatus.LOADING
+            status: ViewStreamStatus.LOADING,
+            visibleGiftsModal: false,
+            curGift: null
         };
         this.connectSocketIO();
     }
@@ -38,38 +42,34 @@ class ViewStream extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { streamer, viewStream, hlsUrl } = this.props;
-        const { streamer: prevStreamer, hlsUrl: prevHlsUrl } = prevProps;
+        const { streamer } = this.props;
+        const { streamer: prevStreamer } = prevProps;
         if (!prevStreamer && streamer) {
-            if (streamer.online && streamer.streamId) {
+            if (streamer.online && streamer.wowzaConf) {
                 //get wowza info
                 //call api view stream of wowza,
-                viewStream(streamer.streamId);
+                if (this.socket) {
+                    this.socket.emit('joinRoom', streamer._id);
+                }
+                this.setState({
+                    status: ViewStreamStatus.SUCCESS
+                });
+                if (Hls.isSupported()) {
+                    this.hls = new Hls({ enableWorker: false });
+                    this.hls.attachMedia(this.video.current);
+                    this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                        this.hls.loadSource(streamer.wowzaConf.player_hls_playback_url);
+                        this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                            this.video.current.play();
+                        });
+                    });
+                }
             }
             else {
                 this.setState({
                     status: ViewStreamStatus.OFFLINE
                 });
             }
-        }
-        if (hlsUrl && !prevHlsUrl) {
-            if (this.socket) {
-                this.socket.emit('joinRoom', streamer._id);
-            }
-            this.setState({
-                status: ViewStreamStatus.SUCCESS
-            });
-            if (Hls.isSupported()) {
-                this.hls = new Hls({ enableWorker: false });
-                this.hls.attachMedia(this.video.current);
-                this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                    this.hls.loadSource(hlsUrl);
-                    this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        this.video.current.play();
-                    });
-                });
-            }
-            
         }
     }
 
@@ -166,6 +166,21 @@ class ViewStream extends React.PureComponent {
         );
     }
 
+    handleOpenGiftsModal = () => {
+        this.setState({
+            visibleGiftsModal: true
+        });
+        const { gifts, fetchGifts } = this.props;
+        if (!gifts) fetchGifts();
+    }
+
+    handleCancel = () => {
+        this.setState({
+            curGift: null,
+            visibleGiftsModal: false
+        });
+    }
+
     handleSendComment = () => {
         const { comment } = this.state;
         const { user, match } = this.props;
@@ -182,11 +197,12 @@ class ViewStream extends React.PureComponent {
         }
     }
     render() {
-        const { status, comments } = this.state;
+        const { status, comments, curGift } = this.state;
         const statusComp = this.getStatusComponent(); 
         const inputComp = this.getInputComponent();
-        const { streamer, gifts, streamerLoading, giftsLoading } = this.props;
-
+        const { user: { coin }, streamer, streamerLoading, giftsLoading } = this.props;
+        let gifts = GIFTS;
+        const current = curGift ? _.find(gifts, g => g._id === curGift) : <Icon type="gift" theme="filled" className={styles.giftIcon} />;
         return (
             <PageHeaderWrapper>
                 <Row className={styles.viewStream}>
@@ -212,7 +228,7 @@ class ViewStream extends React.PureComponent {
                                     <Col span={6} className={styles.actions}>
                                         <Tooltip title={streamer.followed ? "Unfollow" : "Follow"}><Icon type={streamer.followed ? "user-delete" : "user-add"} className={styles.icon} /></Tooltip>
                                         <Tooltip title="Send message"><Icon type="message" className={styles.icon} /></Tooltip>
-                                        <Tooltip title="Send gift"><Icon type="gift" className={styles.icon} /></Tooltip>
+                                        <Tooltip title="Send gift"><Icon type="gift" className={styles.icon} onClick={this.handleOpenGiftsModal}/></Tooltip>
                                     </Col>
                                 </React.Fragment>
                             )}
@@ -250,8 +266,62 @@ class ViewStream extends React.PureComponent {
                         {inputComp}
                     </Col>
                 </Row>
-                <Modal>
-
+                <Modal
+                    title="Gifts"
+                    visible={this.state.visibleGiftsModal}
+                    onOk={this.handleSendGift}
+                    onCancel={this.handleCancel}
+                    okText="Send"
+                    centered
+                    maskClosable={false}
+                    bodyStyle={{
+                        paddingLeft: '2px',
+                        paddingRight: '2px'
+                    }}
+                    className={styles.giftsModal}
+                >
+                    <div className={styles.modal}>
+                        {false || !gifts ? (
+                            <div className={styles.loadingGifts}>
+                                <Spin fontSize={5} />
+                            </div>
+                        ) : (
+                            <Row className={styles.giftsCont}>
+                                <Row className={styles.giftBig}>
+                                    <div className={styles.innerDiv}>{current}</div>
+                                </Row>
+                                <Row className={styles.gifts}>
+                                    <List
+                                        pagination={{
+                                            simple: true,
+                                            defaultCurrent: 1,
+                                            total: gifts.length,
+                                            pageSize: 8,
+                                            size: "small"
+                                        }}
+                                        rowKey={r => r._id}
+                                        grid={{
+                                            gutter: 8, column: 4
+                                        }}
+                                        dataSource={gifts}
+                                        renderItem={item => (
+                                            <List.Item className={styles.giftItem}>
+                                                <div className={styles.avatar}><img src={item.avatar} alt="ava" /></div>
+                                                <div className={styles.name}>{item.name}</div>
+                                                <Row className={styles.punAndCoin} gutter={8}>
+                                                    <Col span={12} style={{ textAlign: 'right' }}><Coin size={16} /><span className={styles.amount}>{item.coin}</span></Col>
+                                                    <Col span={12} style={{ textAlign: 'left' }}><Heart size={16}/><span className={styles.amount}>{item.pun}</span></Col>
+                                                </Row>
+                                            </List.Item>
+                                        )}
+                                    />
+                                </Row>
+                            </Row>
+                        )}
+                        <div className={styles.coin}>
+                            <Coin size={30} style={{ position: 'relative', top: '7px' }}/><span style={{ marginLeft: 5, fontWeight: 'bold' }}>{coin}</span>
+                        </div>
+                    </div>
                 </Modal>
             </PageHeaderWrapper>
         )
@@ -262,7 +332,7 @@ const mapStateToProps = ({ global: globalState, viewStream, loading }) => ({
     user: globalState.user,
     streamer: viewStream.streamer,
     gifts: viewStream.gifts,
-    hlsUrl: viewStream.hlsUrl,
+    //hlsUrl: viewStream.hlsUrl,
     streamerLoading: loading['fetchStreamerVT'] || false,
     giftsLoading: loading['fetchGifts'] || false
 });
@@ -271,7 +341,7 @@ const mapDispatchToProps = dispatch => ({
     fetchStreamer: id => dispatch(viewStreamActions.fetchStreamerVT(id)),
     fetchGifts: () => dispatch(viewStreamActions.fetchGifts()),
     resetViewStream: () => dispatch(viewStreamActions.resetViewStream()),
-    viewStream: streamId => dispatch(viewStreamActions.viewStream(streamId))
+    //viewStream: streamId => dispatch(viewStreamActions.viewStream(streamId))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ViewStream));

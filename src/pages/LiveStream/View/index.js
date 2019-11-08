@@ -217,8 +217,7 @@ class ViewStream extends React.PureComponent {
         const { status, comments, curGiftId } = this.state;
         const statusComp = this.getStatusComponent(); 
         const inputComp = this.getInputComponent();
-        const { user: { coin }, streamer, streamerLoading, giftsLoading, sendLoading } = this.props;
-        let gifts = GIFTS;
+        const { user: { coin }, streamer, streamerLoading, gifts, giftsLoading, sendLoading } = this.props;
         let curGift = null;
         if (!curGiftId)
             curGift = <Icon type="gift" theme="filled" className={styles.giftIcon} />;
@@ -309,7 +308,7 @@ class ViewStream extends React.PureComponent {
                     className={styles.giftsModal}
                 >
                     <div className={styles.modal}>
-                        {false || !gifts ? (
+                        {giftsLoading || !gifts ? (
                             <div className={styles.loadingGifts}>
                                 <Spin fontSize={5} />
                             </div>

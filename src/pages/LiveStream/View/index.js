@@ -85,7 +85,7 @@ class ViewStream extends React.PureComponent {
     }
 
     connectSocketIO = () => {
-        const { match } = this.props;
+        const { match, updateStreamerPun } = this.props;
         const { streamerId } = match.params;
         this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/stream`);
         this.socket.on('connect', () => {
@@ -99,6 +99,14 @@ class ViewStream extends React.PureComponent {
                 comments: [...this.state.comments, message]
             });
         });
+        this.socket.on('messageGift', message => {
+            this.setState({
+                comments: [...this.state.comments, message]
+            });
+        });
+        this.socket.on('changePun', pun => {
+            updateStreamerPun(pun);
+        })
         this.socket.on('close', () => {
             this.setState({
                 status: ViewStreamStatus.OFFLINE
@@ -204,12 +212,14 @@ class ViewStream extends React.PureComponent {
     }
 
     handleSendGift = () => {
-        const { curGiftId, sendGift, streamer } = this.state;
+        const { curGiftId } = this.state;
+        const { sendGift, streamer } = this.props;
         if (!curGiftId) return message.error('You must select gift!');
         const streamerId = streamer._id;
         sendGift(curGiftId, streamerId);
         this.setState({
-            visibleGiftsModal: false
+            visibleGiftsModal: false,
+            curGiftId: null
         });
     }
 
@@ -255,6 +265,7 @@ class ViewStream extends React.PureComponent {
                                     <Col span={6} className={styles.actions}>
                                         <Tooltip title={streamer.followed ? "Unfollow" : "Follow"}><Icon type={streamer.followed ? "user-delete" : "user-add"} className={styles.icon} /></Tooltip>
                                         <Tooltip title="Send message"><Icon type="message" className={styles.icon} /></Tooltip>
+                                        <Tooltip title="Say love"><Icon type="heart" className={styles.icon}/></Tooltip>
                                         <Tooltip title="Send gift"><Icon type="gift" className={styles.icon} onClick={this.handleOpenGiftsModal}/></Tooltip>
                                     </Col>
                                 </React.Fragment>
@@ -378,7 +389,8 @@ const mapDispatchToProps = dispatch => ({
     fetchStreamer: id => dispatch(viewStreamActions.fetchStreamerVT(id)),
     fetchGifts: () => dispatch(viewStreamActions.fetchGifts()),
     resetViewStream: () => dispatch(viewStreamActions.resetViewStream()),
-    sendGift: (giftId, streamerId) => dispatch(viewStreamActions.sendGift(giftId, streamerId))
+    sendGift: (giftId, streamerId) => dispatch(viewStreamActions.sendGift(giftId, streamerId)),
+    updateStreamerPun: pun => dispatch(viewStreamActions.updateStreamerPun(pun))
     //viewStream: streamId => dispatch(viewStreamActions.viewStream(streamId))
 });
 

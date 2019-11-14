@@ -3,6 +3,7 @@ import * as actionTypes from '_redux/actions/actionTypes';
 import * as viewStreamActions from '_redux/actions/viewStream';
 import * as loadingActions from '_redux/actions/loading';
 import * as viewStreamServices from 'services/viewStream';
+import * as globalActions from '_redux/actions/global';
 import { delay } from 'utils/utils';
 
 function* fetchStreamerVT({ payload: streamerId }) {
@@ -41,8 +42,8 @@ function* sendGift({ payload }) {
     if (response) {
         const { data } = response;
         if (data.status) {
-            const pun = data.pun;
-            yield put(viewStreamActions.updateStreamerPun(pun));
+            const coin = data.coin;
+            yield put(globalActions.saveCoins(coin));
         }
     }
     yield put(loadingActions.saveLoading('sendGift', false));

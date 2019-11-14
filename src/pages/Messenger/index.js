@@ -75,7 +75,7 @@ class Messenger extends PureComponent {
 
     connectSocketIO = () => {
         const { addNewMessage, updateLastMessAndUpdatedAt, updateSeenMessages } = this.props;
-        this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/chat`);
+        this.socket = io.connect(`https://18.189.6.37/chat`);
         this.socket.on('connect', () => {
             console.log('Socket connection!');
         });

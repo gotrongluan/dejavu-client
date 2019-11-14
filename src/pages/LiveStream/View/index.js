@@ -85,7 +85,7 @@ class ViewStream extends React.PureComponent {
 
     connectSocketIO = () => {
         const { updateStreamerPun } = this.props;
-        this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/stream`);
+        this.socket = io.connect(`https://18.189.6.37/stream`);
         this.socket.on('connect', () => {
             console.log('Socket connection!');
         });

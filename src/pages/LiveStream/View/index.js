@@ -78,7 +78,7 @@ class ViewStream extends React.PureComponent {
         resetViewStream();
         if (this.hls) this.hls.destroy();
         if (this.socket) {
-            this.socket.emit('leaveRoom', match.params.streamerId);
+            this.socket.emit('leaveRoom', match.params.streamerId, match.params.streamerId);
             this.socket.disconnect();
             this.socket = null;
         }

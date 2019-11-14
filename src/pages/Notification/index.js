@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Row, Col, List, Divider, Avatar } from 'antd';
+import { Row, List, Divider, Avatar } from 'antd';
 import PageHeaderWrapper from 'components/PageHeaderWrapper';
 import Spin from 'elements/Spin/Second';
 import { subscribeInfiniteScroll } from 'utils/infiniteScroll';

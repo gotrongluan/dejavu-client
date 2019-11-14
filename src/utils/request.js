@@ -5,7 +5,7 @@ import { history } from 'utils/history';
 import storage from 'utils/storage';
 import { toQueryString } from 'utils/utils';
 
-const { NODE_ENV, REACT_APP_BACKEND_URL } = process.env;
+const { NODE_ENV } = process.env;
 
 const codeMessage = {
   200: 'Máy chủ đã trả về thành công dữ liệu được yêu cầu.',

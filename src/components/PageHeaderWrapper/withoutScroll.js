@@ -1,7 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
 import Header from 'layouts/Header';
-import Footer from 'layouts/Footer';
 import Authorized from 'components/Authorized';
 
 const { Content } = Layout;

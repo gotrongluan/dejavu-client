@@ -10,7 +10,6 @@ import Spin from 'elements/Spin/Second';
 import * as CoinPolicyActions from '_redux/actions/coinPolicy';
 import * as TransactionActions from '_redux/actions/transactions';
 import { subscribeInfiniteScroll } from 'utils/infiniteScroll';
-import { fromNow } from 'utils/utils';
 import styles from './index.module.less';
 
 

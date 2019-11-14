@@ -266,7 +266,7 @@ class Messenger extends PureComponent {
                                 ) : (
                                     <MessageView 
                                         messages={messages}
-                                        converId={currentUser && currentUser.converId || null}
+                                        converId={(currentUser && currentUser.converId) || null}
                                         fetchOldMessages={fetchOldMessages}
                                         oldLoading={messagesOldLoading}
                                     />

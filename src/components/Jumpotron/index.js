@@ -36,8 +36,6 @@ const app_socials = [
 
 class Jumpotron extends PureComponent {
     render() {
-        const { toggleAffixSider } = this.props;
-
         return (
             <Row className={styles.jumpotron}>
                 <Col span={24}>

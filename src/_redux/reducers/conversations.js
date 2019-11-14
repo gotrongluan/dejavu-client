@@ -1,5 +1,4 @@
 import * as actionTypes from '_redux/actions/actionTypes';
-import { stat } from 'fs';
 
 export default (state = {
     hasMore: true,

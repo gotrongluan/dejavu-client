@@ -1,5 +1,4 @@
 import React from 'react';
-import _  from 'lodash';
 import { connect } from 'react-redux';
 import * as globalActions from '_redux/actions/global';
 import { Link, withRouter } from 'react-router-dom';

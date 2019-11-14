@@ -6,7 +6,6 @@ import { Form, Row, Col, Upload, Input, Select, DatePicker, Button, Avatar, Icon
 import AccountWrapper from 'components/AccountWrapper';
 import styles from './index.module.less';
 
-const FormItem = Form.Item;
 const { TextArea } = Input;
 const { Option } = Select;
 

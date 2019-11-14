@@ -1,5 +1,5 @@
 import React from 'react';
-import moment, { duration } from 'moment';
+import moment from 'moment';
 import _ from 'lodash';
 import { all, take, fork, put, cancel, call, takeEvery, select } from 'redux-saga/effects';
 import NotificationTypes from 'constants/notificationType';

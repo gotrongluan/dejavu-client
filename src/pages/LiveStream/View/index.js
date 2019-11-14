@@ -13,7 +13,6 @@ import PaperPlane from 'elements/Icon/PaperPlane';
 import Spin from 'elements/Spin/Second';
 import ViewStreamStatus from 'constants/viewStreamStatus';
 import * as viewStreamActions from '_redux/actions/viewStream';
-import GIFTS from 'assets/faker/gifts';
 import styles from './index.module.less';
 
 class ViewStream extends React.PureComponent {
@@ -85,8 +84,7 @@ class ViewStream extends React.PureComponent {
     }
 
     connectSocketIO = () => {
-        const { match, updateStreamerPun } = this.props;
-        const { streamerId } = match.params;
+        const { updateStreamerPun } = this.props;
         this.socket = io.connect(`${process.env.REACT_APP_BACKEND_URL}/stream`);
         this.socket.on('connect', () => {
             console.log('Socket connection!');

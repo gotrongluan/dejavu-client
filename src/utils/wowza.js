@@ -1,7 +1,6 @@
 /* eslint-disable  consistent-return */
 import fetch from 'cross-fetch';
 import { notification } from 'antd';
-import { history } from 'utils/history';
 
 const { NODE_ENV, REACT_APP_WSC_HOST, REACT_APP_WSC_VERSION, REACT_APP_WSC_ACCESS_KEY, REACT_APP_WSC_API_KEY } = process.env;
 

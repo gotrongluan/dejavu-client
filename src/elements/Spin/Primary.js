@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/core';
 import ScaleLoader from 'react-spinners/ScaleLoader';
-import { Spin, Icon } from 'antd';
+import { Spin } from 'antd';
 
 const override = css``;
 

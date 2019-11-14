@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Form, Row, Col, Input, Button, Avatar, Tooltip, Modal } from 'antd';

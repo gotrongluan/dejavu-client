@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import PaperPlane from 'elements/Icon/PaperPlane';
 
 export const fetchMessengerPopovers = () => ({
     type: actionTypes.FETCH_MESSENGER_POPOVERS,

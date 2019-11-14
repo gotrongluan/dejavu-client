@@ -104,7 +104,7 @@ export default async function request(url, options) {
     }
 
     //console.log(`${REACT_APP_BACKEND_URL}/${url}${qs ? `?${qs}` : ''}`);
-    return fetch(`https://localhost:4443/${url}${qs ? `?${qs}` : ''}`, newOptions)
+    return fetch(`https://18.189.6.37/${url}${qs ? `?${qs}` : ''}`, newOptions)
         .then(checkStatus)
         .then(response => {
             // DELETE and 204 do not return data by default

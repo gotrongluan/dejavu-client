@@ -8,7 +8,7 @@
     "classnames": "^2.2.6",
     "cross-fetch": "^3.0.4",
     "customize-cra": "^0.8.0",
-    "firebase": "^7.2.2",
+    "firebase": "^7.24.0",
     "history": "^4.10.1",
     "hls": "0.0.1",
     "hls.js": "^0.12.4",
